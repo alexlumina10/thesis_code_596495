@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reddit as a Leading Indicator of Political Prediction Market Trading Volume</title>
+<style>
+  /* ── Reset & base ─────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 2;
+    color: #000;
+    background: #fff;
+  }
+
+  /* ── Page layout ──────────────────────────────────────────────── */
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    margin: 0 auto;
+    padding: 1in 1in 1in 1in;
+    position: relative;
+  }
+
+  /* ── Running head ─────────────────────────────────────────────── */
+  .running-head {
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.5in;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── Title page ───────────────────────────────────────────────── */
+  .title-page {
+    text-align: center;
+    padding-top: 2in;
+  }
+  .title-page h1 {
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: 2;
+    margin-bottom: 1em;
+  }
+  .title-page .author { margin-bottom: 0.5em; }
+  .title-page .affiliation { margin-bottom: 0.5em; }
+  .title-page .course { margin-bottom: 0.5em; }
+  .title-page .date { margin-bottom: 0.5em; }
+
+  /* ── Section headings ─────────────────────────────────────────── */
+  /* APA Level 1 */
+  h1.l1 {
+    font-size: 12pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 2em;
+    margin-bottom: 0;
+  }
+  /* APA Level 2 */
+  h2.l2 {
+    font-size: 12pt;
+    font-weight: bold;
+    text-align: left;
+    margin-top: 1.5em;
+    margin-bottom: 0;
+  }
+  /* APA Level 3 */
+  h3.l3 {
+    font-size: 12pt;
+    font-weight: bold;
+    font-style: italic;
+    text-align: left;
+    margin-top: 1em;
+    margin-bottom: 0;
+  }
+  /* APA Level 4 */
+  h4.l4 {
+    font-size: 12pt;
+    font-weight: normal;
+    font-style: italic;
+    text-align: left;
+    margin-top: 0.8em;
+    margin-bottom: 0;
+  }
+
+  /* ── Body text ────────────────────────────────────────────────── */
+  p {
+    text-indent: 0.5in;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  p.noindent { text-indent: 0; }
+  p.block-quote {
+    text-indent: 0;
+    margin-left: 0.5in;
+    margin-right: 0.5in;
+    font-size: 11pt;
+    line-height: 2;
+  }
+
+  /* ── Abstract ─────────────────────────────────────────────────── */
+  .abstract-block {
+    margin-top: 1em;
+  }
+  .abstract-block p {
+    text-indent: 0;
+  }
+  .keywords {
+    text-indent: 0;
+    margin-top: 1em;
+  }
+  .keywords em { font-style: italic; }
+
+  /* ── Tables ───────────────────────────────────────────────────── */
+  .table-wrap {
+    margin: 1.5em 0;
+    page-break-inside: avoid;
+  }
+  .table-label {
+    font-weight: bold;
+    text-indent: 0;
+    margin-bottom: 0;
+  }
+  .table-title {
+    font-style: italic;
+    text-indent: 0;
+    margin-bottom: 0.4em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+  thead tr {
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #000;
+  }
+  tbody tr:last-child {
+    border-bottom: 2px solid #000;
+  }
+  th, td {
+    padding: 4px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { font-weight: bold; }
+  .table-note {
+    font-size: 10.5pt;
+    line-height: 1.6;
+    text-indent: 0;
+    margin-top: 0.3em;
+  }
+  .center { text-align: center; }
+  .right  { text-align: right; }
+
+  /* ── References ───────────────────────────────────────────────── */
+  .ref-item {
+    text-indent: -0.5in;
+    padding-left: 0.5in;
+    margin-bottom: 0;
+    line-height: 2;
+  }
+
+  /* ── Figures ──────────────────────────────────────────────────── */
+  .figure-wrap {
+    margin: 2em 0;
+    page-break-inside: avoid;
+  }
+  .figure-label {
+    font-weight: bold;
+    text-indent: 0;
+    margin-bottom: 0;
+  }
+  .figure-title {
+    text-indent: 0;
+    margin-bottom: 0.5em;
+  }
+  .figure-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0.5em auto;
+    border: 1px solid #ddd;
+  }
+  .figure-note {
+    font-size: 10.5pt;
+    line-height: 1.6;
+    text-indent: 0;
+    margin-top: 0.3em;
+  }
+
+  /* ── Misc ─────────────────────────────────────────────────────── */
+  .page-break { page-break-after: always; }
+  sup { font-size: 9pt; }
+  hr.thin { border: none; border-top: 1px solid #ccc; margin: 1em 0; }
+
+  /* ── Print overrides ──────────────────────────────────────────── */
+  @media print {
+    body { background: white; }
+    .page { width: 100%; padding: 1in; margin: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ TITLE PAGE ════════════════════════════════ -->
+<div class="page page-break">
+  <div class="running-head">
+    <span>REDDIT AND POLITICAL PREDICTION MARKETS</span>
+    <span>1</span>
+  </div>
+  <div class="title-page">
+    <h1>Does Reddit Discussion Predict Political Prediction Market Trading Volume?<br>
+        Granger Causality Evidence from Kalshi and Five U.S. Political Markets</h1>
+    <p class="noindent author" style="margin-top:2em;">Lumina Alexandru-Stefan</p>
+    <p class="noindent affiliation">Amsterdam Business School, University of Amsterdam</p>
+    <p class="noindent course">BAM Thesis</p>
+    <p class="noindent date">May 2026</p>
+    <p class="noindent" style="margin-top:3em;">Author Note</p>
+    <p class="noindent" style="margin-top:1em; text-align:left;">
+      This paper was prepared as a master's thesis for the Business Administration: Management programme at the Amsterdam Business School, University of Amsterdam. All data were collected via publicly available APIs (Kalshi Trade API v2; Reddit JSONL archives). The author declares no conflicts of interest.
+    </p>
+    <p class="noindent" style="margin-top:1em; text-align:left;">
+      Correspondence concerning this paper should be addressed to Lumina Alexandru-Stefan.
+      Email: <a href="mailto:alexlumina10@gmail.com">alexlumina10@gmail.com</a>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ ABSTRACT ══════════════════════════════════ -->
+<div class="page page-break">
+  <div class="running-head">
+    <span>REDDIT AND POLITICAL PREDICTION MARKETS</span>
+    <span>2</span>
+  </div>
+  <h1 class="l1">Abstract</h1>
+  <div class="abstract-block">
+    <p class="noindent">
+      This study investigates whether daily Reddit post volume about a political event Granger-causes trading volume on the corresponding Kalshi prediction market, focusing exclusively on U.S. political prediction markets — the most heavily traded category on Kalshi and the events most prominently discussed in U.S.-focused Reddit communities. Using daily candlestick data from five U.S. political prediction markets (January–May 2026) and keyword-filtered post counts from three Reddit communities dedicated to U.S. political discourse (r/politics, r/TheBulwark, r/PoliticalDiscussion), this study applies augmented Dickey-Fuller stationarity tests, Bayesian Information Criterion lag selection, and bivariate Granger causality tests in both directions, complemented by cross-correlation analysis on first-differenced series at lags −7 to +7 days. The results reveal two distinct regimes rather than a single uniform effect. For two slow-developing markets — the government shutdown length market (<em>F</em>(1, 73) = 21.20, <em>p</em> &lt; .001) and the Federal Reserve Chair confirmation market (<em>F</em>(1, 65) = 8.56, <em>p</em> = .005) — Reddit post counts Granger-caused trading volume with a consistent <em>one-day lead</em> (peak cross-correlations at lag +1: <em>r</em> = .48 and <em>r</em> = .38), and no sustained reverse causality. For three markets resolved by discrete events — a redistricting referendum, a primary election, and a geopolitical crisis — Reddit and trading volume instead move <em>contemporaneously</em> (same-day), with no one-day lead. Critically, the crisis market (Strait of Hormuz) exhibited the highest Reddit engagement of all five (zero-rate = 10%) yet showed no lead, demonstrating that the predictive lead depends on <em>event tempo</em> — whether public attention accumulates ahead of trading — rather than on the sheer volume of attention. The findings support a bounded claim: Reddit functions as a <em>leading</em> indicator for slow-burn political processes and as a <em>contemporaneous</em> indicator for shock-resolution events. They contribute to the literature on social media as a financial information source and offer a methodological framework for distinguishing leading from coincident online-discourse signals.
+    </p>
+    <p class="keywords">
+      <em>Keywords:</em> prediction markets, social media, Reddit, Granger causality, political markets, information transmission, trading volume, Kalshi
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAPER BODY ════════════════════════════════ -->
+<div class="page">
+  <div class="running-head">
+    <span>REDDIT AND POLITICAL PREDICTION MARKETS</span>
+    <span>3</span>
+  </div>
+
+  <h1 class="l1">Does Reddit Discussion Predict Political Prediction Market Trading Volume?<br>
+  Granger Causality Evidence from Kalshi and Five U.S. Political Markets</h1>
+
+  <!-- ─── 1. INTRODUCTION ─────────────────────────────────────────────────── -->
+  <h1 class="l1">Introduction</h1>
+
+  <p>The relationship between public discourse and financial markets has attracted sustained scholarly attention since the advent of digital communication. The question of whether what people say — and when they say it — contains information that moves prices and volumes in financial markets is not merely academic. It has implications for market efficiency theory, the design of information aggregation mechanisms, and the broader question of how democracies process political information. The emergence of social media as a dominant medium for political discussion, and the parallel rise of retail-accessible prediction markets, creates a new and underexplored intersection: does the volume of online political discussion about an event reliably predict trading activity in markets designed to forecast that event's outcome?</p>
+
+  <p>This study addresses that question using data from Reddit — the largest English-language political discussion forum — and Kalshi, a regulated U.S. prediction market exchange that allows participants to trade binary and multi-outcome contracts on political and other events. The specific research question is: does daily Reddit post volume about a political event Granger-cause daily trading volume in the corresponding Kalshi prediction market, and if so, with what lead time?</p>
+
+  <p>The analysis focuses exclusively on U.S. political prediction markets for two reasons. First, U.S. political events — major legislative outcomes, executive appointments, and prominent primaries — constitute the most heavily traded category on Kalshi by contract volume, reflecting the concentration of retail and professional political bettors in the U.S. political arena. Second, U.S. politics is by far the most prominent category of political discussion on the Reddit communities used in this study: r/politics is explicitly dedicated to U.S. political news, and r/TheBulwark is a U.S.-focused political commentary community. This alignment between the Reddit source and the prediction market category is a precondition for the information channel hypothesis: markets for non-U.S. political events would lack a natural Reddit counterpart, making the channel inactive by construction. Markets involving foreign political events or non-political topics are therefore excluded from scope.</p>
+
+  <p>The intuition underlying this question is straightforward. If Reddit discussion reflects and aggregates distributed public attention to a political event, then a surge in Reddit posts may indicate growing public salience — a condition that, with a short lag, translates into increased trading activity as more market participants become aware of and engage with the corresponding prediction market. Alternatively, prediction market activity itself may attract media coverage that subsequently generates Reddit discussion, reversing the causal arrow. Establishing which direction dominates — or whether both are simultaneously present — has implications for understanding the role of retail-level online discourse in information transmission between the public and financial markets.</p>
+
+  <p>An important interpretive caveat applies throughout: both Reddit post volume and Kalshi trading volume are observable proxies for underlying information processes, not the processes themselves. The Granger causality test measures temporal priority — whether one proxy contains information about the future values of the other, above and beyond that proxy's own history — but does not identify the structural mechanism. Three mechanisms are broadly consistent with a Reddit-leads-volume finding: Reddit discussion directly attracts previously uninformed traders to the market; both Reddit and trading activity respond to the same external news events, with Reddit reacting marginally faster due to lower transaction costs; or Reddit activity influences media coverage, which in turn influences market participants. The present study establishes predictive precedence, not structural causality, and the discussion of mechanisms remains necessarily speculative.</p>
+
+  <p>The present study makes three contributions. First, it provides direct empirical evidence on the Reddit-to-prediction-market information channel using a novel dataset covering five U.S. political markets across the January–May 2026 period. Second, it applies a rigorous time-series econometric framework — incorporating stationarity testing, vector autoregression, and Granger causality — to a domain (political prediction markets) that has received limited treatment with these methods. Third, and perhaps most importantly, it shows that the Reddit-to-market relationship is not uniform: whether Reddit <em>leads</em> trading depends on the <em>temporal structure</em> of the underlying event. For slow-developing processes — a protracted shutdown negotiation, a drawn-out confirmation fight — public attention accumulates over days and Reddit leads trading by approximately one day. For events that resolve in a single shock — a referendum vote, an election night, a geopolitical flashpoint — Reddit and trading react to the same news simultaneously, producing a contemporaneous association with no lead. Decisively, the market with the <em>most</em> Reddit attention (the Strait of Hormuz crisis) shows no lead at all, ruling out the simpler hypothesis that the lead is a function of attention volume. This reframes the research question from "does Reddit predict prediction markets?" to "for which events does Reddit lead, rather than merely accompany, prediction market activity?", which is a more theoretically precise and practically useful formulation.</p>
+
+  <p>The remainder of this paper is structured as follows. The Theoretical Background situates the study within existing research on prediction markets as information aggregators, social media as financial information, and Granger causality applied to online discourse, concluding with the formal hypotheses. The Methodology section describes the Kalshi and Reddit data sources, keyword filtering approach, and time-series procedures. Results are presented across the five markets, distinguishing those in which Reddit leads trading from those in which the two co-move contemporaneously. The Discussion interprets the findings in light of the leading-versus-contemporaneous distinction and the role of event tempo, with Limitations and a concluding summary as subsections.</p>
+
+  <!-- ─── 2. THEORETICAL BACKGROUND ───────────────────────────────────────── -->
+  <h1 class="l1">Theoretical Background</h1>
+
+  <h2 class="l2">Prediction Markets as Information Aggregators</h2>
+
+  <p>Prediction markets are exchange-traded contracts whose payoffs are contingent on the outcome of a future event, thereby creating financial incentives for participants to reveal their private beliefs about that outcome (Wolfers &amp; Zitzewitz, 2004). The theoretical basis for their information-aggregating properties is rooted in Hayek's (1945) insight that prices in competitive markets efficiently summarise dispersed private knowledge, and in the rational expectations tradition that treats market prices as sufficient statistics for the aggregate of privately held information (Lucas, 1972). Arrow et al. (2008) argued in a prominent <em>Science</em> commentary that prediction markets represent one of the most reliable known mechanisms for aggregating probabilistic beliefs about future events.</p>
+
+  <p>Empirically, the information efficiency of prediction markets has been documented most thoroughly in electoral contexts. Studies using the Iowa Electronic Markets have repeatedly shown that political prediction markets outperform polling averages in forecasting U.S. presidential election outcomes (Berg et al., 2008). Snowberg et al. (2012) demonstrated that these forecasts are consistent with rational expectations and contain genuine predictive information beyond what is available from traditional polling. Rothschild (2009) found that prediction market prices adjust to incorporate new polling information within hours of publication.</p>
+
+  <p>Despite their theoretical efficiency, prediction markets are not immune to noise. Uninformed or sentiment-driven traders can temporarily move prices away from their efficient levels, particularly in thin markets with limited participation. Wolfers and Zitzewitz (2006) noted that prediction market prices can be influenced by liquidity and risk-aversion considerations that cause them to deviate from true implied probabilities. It is precisely in this context — the gap between efficient prices and actual trading behaviour — that social media activity may play a role. If Reddit discussion attracts new, potentially less-informed traders to a market, this could generate volume surges that lag slightly behind the information events that prompted the discussion.</p>
+
+  <h2 class="l2">Social Media as Financial Information Source</h2>
+
+  <p>The question of whether social media content contains information that moves financial markets has generated a substantial empirical literature over the past fifteen years. The seminal study by Bollen et al. (2011) demonstrated that sentiment derived from Twitter posts was predictive of daily changes in the Dow Jones Industrial Average, with a lead time of two to six days. Subsequent work has explored this relationship across a wide range of asset classes and platforms.</p>
+
+  <p>Da et al. (2011) used Google search volume as a direct measure of investor attention and showed that increases in search activity for individual stocks predicted higher prices in the subsequent two weeks, with subsequent reversals consistent with attention-driven demand rather than fundamental information. This attention-based mechanism is directly relevant to the present study: Reddit post volume, like search volume, proxies for public attention to an event, and the hypothesised mechanism is that increased attention translates into increased prediction market participation.</p>
+
+  <p>Tetlock (2007) demonstrated that media pessimism — measured by the negative word frequency in the Wall Street Journal's "Abreast of the Market" column — predicted lower stock returns, with the effect reversing over subsequent weeks in a pattern consistent with noise trader activity. Tetlock et al. (2008) extended this to earnings announcement contexts, showing that the fraction of negative words in firm-specific news articles predicted both accounting earnings and stock returns. These studies established the methodological precedent for treating textual volume metrics from media and online sources as proxies for information flow.</p>
+
+  <p>Sprenger et al. (2014) examined the information content of stock-related microblogs and found that message volume predicted abnormal returns and trading volume, with the predictive power concentrated in posts from users with high historical accuracy. Chen et al. (2014) analysed Seeking Alpha articles and user comments, finding that article content and comment sentiment predicted future returns beyond what was captured by standard risk factors. Cookson and Niessner (2020) showed that investor disagreement expressed on social platforms — measured by the dispersion of opinion on StockTwits — predicted subsequent trading volume, directly linking online discussion intensity to market activity.</p>
+
+  <p>A consistent theme in this literature is that social media effects on financial variables are heterogeneous: they are strongest when the platform is relevant to the event being traded, when engagement is sufficiently high to constitute a meaningful signal, and when the user base has some genuine informational connection to the underlying fundamentals. A subtler dimension, less emphasised in this literature, concerns <em>timing</em>: for social-media activity to <em>lead</em> a market rather than merely coincide with it, there must be a temporal gap between the moment attention forms and the moment it is acted upon. The present study isolates exactly this condition, showing that the Reddit lead is present for slowly-developing events but collapses to a contemporaneous association when an event resolves in a single news shock.</p>
+
+  <h2 class="l2">Reddit's Role in Political Discourse and Market Behavior</h2>
+
+  <p>Reddit occupies a distinctive position among social media platforms as both a political discussion forum and, in certain communities, a direct coordination mechanism for retail market activity. The WallStreetBets community's role in the 2021 GameStop short squeeze demonstrated that Reddit can serve as an explicit coordination platform for trading (Lyócsa et al., 2022; Hasso et al., 2022). However, the mechanism in the present study is different: rather than examining Reddit as a direct coordination platform for trading in the same asset, this study treats Reddit political discourse as a signal of public attention and salience that may propagate into prediction market activity.</p>
+
+  <p>Reddit's r/politics community, with tens of millions of subscribers, serves as one of the primary venues for national U.S. political discussion online. Its post volume on a given topic is a reasonable proxy for the degree to which that topic has penetrated the national political conversation. Unlike Twitter (now X), where political content is mixed with entertainment and celebrity discussion, r/politics is explicitly dedicated to U.S. political news, making keyword-filtered post volume a relatively clean measure of event-specific public attention for U.S. political events.</p>
+
+  <p>The specific subreddits used in this study — r/politics, r/TheBulwark, and r/PoliticalDiscussion — represent three complementary U.S. political information communities. r/politics is the largest U.S. politics community on Reddit and provides the broadest measure of national political attention. r/TheBulwark is a community associated with the centre-right political commentary outlet of the same name, capturing politically engaged, ideologically moderate U.S.-focused discussion. r/PoliticalDiscussion is a moderated forum oriented toward substantive, in-depth analysis of U.S. political developments, complementing the high-volume, fast-moving character of r/politics with a more deliberative discussion stream. All three communities are tightly aligned with U.S. political events, making keyword-filtered post counts from these sources a coherent signal of U.S.-specific public attention. Communities focused primarily on financial trading rather than political news — such as r/WallStreetBets — were excluded because their posting behaviour reflects financial market sentiment rather than political discourse, introducing a confound that would obscure the political information channel under investigation.</p>
+
+  <p>Prior research on Reddit and prediction markets specifically is sparse. Mao et al. (2011) examined social media mood and prediction market prices, finding that positive sentiment on Twitter predicted increases in prediction market prices for economic indicators. However, their study used price as the dependent variable rather than trading volume, and did not focus on the lead-lag structure that is the central interest here. The distinction matters conceptually: prediction market prices reflect participants' aggregate probability estimates for an event outcome, and are most sensitive to information that updates those estimates. Trading volume, by contrast, reflects participation intensity — the number of contracts that change hands, regardless of the direction of price movement. An attention-based mechanism would be expected to manifest first in volume, as newly aware participants enter the market, and only secondarily in prices, as those participants' beliefs are aggregated. Volume is therefore the more direct dependent variable for testing whether online public attention propagates into market activity.</p>
+
+  <p>A further gap concerns the magnitude and timing of the lead. Bollen et al. (2011) reported a Twitter-to-DJIA lag of two to six days; Da et al. (2011) documented a one-to-two-week Google search-to-stock-price lag. These relatively long leads likely reflect the indirect route from general sentiment signals to large, diversified financial market indices. The one-day lead documented in the present study is substantially shorter, consistent with a more direct information pathway: the politically engaged population that uses r/politics to follow national political events likely overlaps substantially with the retail participant base of political prediction markets, compressing the lag from public salience to market activity relative to the indirect routes studied in the equity market literature. The present study is therefore best positioned not as a replication of equity-market social-media results but as a test of a more specific hypothesis about direct audience overlap between a dedicated political discussion platform and a political prediction market.</p>
+
+  <h2 class="l2">Granger Causality in Social Media and Finance Research</h2>
+
+  <p>The concept of Granger causality (Granger, 1969) provides the statistical framework for assessing whether one time series contains information about the future values of another, above and beyond what the target series itself contains. Formally, a series <em>X</em> Granger-causes series <em>Y</em> if lagged values of <em>X</em> are significant predictors of <em>Y</em> in a regression that already controls for lagged values of <em>Y</em>. The test does not establish structural or physical causation; it establishes predictive precedence, which is the appropriate concept for the information transmission hypothesis examined here.</p>
+
+  <p>Granger causality has been widely applied in the social media and finance literature. Bollen et al. (2011) used Granger tests to establish the temporal precedence of Twitter sentiment over stock returns. Antweiler and Frank (2004) applied vector autoregression to internet message board posts and found bidirectional Granger causality between message volume and stock market volatility — a finding that highlights the importance of testing both directions, as the present study does. Ruiz et al. (2012) demonstrated Granger causality from Twitter activity to stock trading volume across a sample of NYSE-listed firms.</p>
+
+  <p>A key methodological concern in applying Granger causality to social media and financial data is stationarity. Both social media post counts and trading volumes typically exhibit non-stationary behaviour — trending upward over time, or exhibiting structural breaks around news events — that can produce spurious Granger causality if the series are not properly pre-processed (Toda &amp; Yamamoto, 1995). The present study follows standard practice by applying augmented Dickey-Fuller tests and first-differencing non-stationary series prior to Granger testing (Dickey &amp; Fuller, 1979).</p>
+
+  <h2 class="l2">Political Prediction Markets and Information Segmentation</h2>
+
+  <p>A distinctive feature of political prediction markets — as opposed to equity markets — is the segmentation of their participant bases by the type and scale of political event being traded. For major national events such as presidential elections, congressional control, or high-profile legislative battles, the participant pool includes both retail participants drawn from the national political conversation and professional or semi-professional political bettors. For state and local races, the participant pool narrows sharply: active traders are typically political operatives with inside knowledge of local polling and campaign dynamics, professional bettors who follow state-level races as a specialised activity, and niche analysts with access to local information networks (Snowberg et al., 2012).</p>
+
+  <p>This segmentation implies that the information channels connecting online discourse to market activity will differ by event type. For national events, Reddit political discourse and prediction market trading may share a common information set — both responding to the same national news cycle — making the Reddit-to-volume lead plausible. For local events, Reddit has little to say, but substantial informed trading still occurs, driven by channels (local press, private polling, partisan communications) that are not captured by national social media data. The implication is that the absence of Reddit coverage in state and local markets is not a gap in the data but a structural feature of those markets' information environments, with direct implications for which markets are in-scope for the research hypothesis.</p>
+
+  <h2 class="l2">Hypotheses</h2>
+
+  <p>Based on the theoretical framework and prior literature, three formal hypotheses are advanced:</p>
+
+  <p><strong>Hypothesis 1 (Reddit Leads Volume).</strong> Daily Reddit post counts related to a political event will Granger-cause daily trading volume in the corresponding Kalshi prediction market, with an approximately one-day lead, in markets covering events that develop gradually over time.</p>
+
+  <p>This hypothesis is grounded in the attention-based mechanism of Da et al. (2011) and the social media-to-volume link documented by Cookson and Niessner (2020). The one-day lead is motivated by the daily granularity of the data and the plausible mechanism: a Reddit discussion spike on day <em>t</em> attracts additional participants to the market who place trades on day <em>t</em> + 1.</p>
+
+  <p><strong>Hypothesis 2 (Directional Asymmetry).</strong> The reverse relationship — Kalshi trading volume Granger-causing Reddit post counts — will not be sustained beyond a single lag in markets where Reddit leads volume.</p>
+
+  <p>If the effect were bidirectional and sustained, it would indicate that Reddit and trading volume are jointly responding to the same external news events rather than one leading the other, which would undermine the information channel interpretation. Unidirectionality is a necessary condition for interpreting the Reddit-to-volume relationship as an information channel rather than a spurious correlation driven by common news shocks.</p>
+
+  <p><strong>Hypothesis 3 (Event Tempo Conditions the Lead).</strong> The one-day Reddit-to-volume lead will be present for slowly-developing events — those whose resolution unfolds over many days, allowing public attention to accumulate ahead of trading — and absent for events that resolve in a single, discrete news shock, for which Reddit and trading volume will instead exhibit a contemporaneous (same-day) association. The presence of the lead will not be a function of the sheer volume of Reddit attention.</p>
+
+  <p>This hypothesis reframes the boundary condition of the effect in terms of the event's temporal structure rather than its attention level. For a lead to exist, there must be a gap in time between the formation of public attention and its translation into trades; slowly-developing processes create such a gap, whereas shock-resolution events compress it to zero, so that attention and trading react to the same headline within the same day. The clause that the lead is not a function of attention volume yields a sharp, falsifiable prediction: a market with very high Reddit engagement but a shock-driven resolution should display a contemporaneous association and no lead, distinguishing this hypothesis from a simple "more attention, stronger signal" account.</p>
+
+  <!-- ─── 3. METHODOLOGY ───────────────────────────────────────────────────── -->
+  <h1 class="l1">Methodology</h1>
+
+  <h2 class="l2">Data</h2>
+
+  <h3 class="l3">Prediction Market Data</h3>
+
+  <p>Kalshi prediction market data were obtained via the publicly accessible Kalshi Trade API (v2), which provides daily OHLCV (open, high, low, close, volume) candlestick data for individual market contracts. The study is scoped exclusively to U.S. political prediction markets — the most heavily traded category on Kalshi by contract volume during the study period. Markets covering non-U.S. political events or non-political topics were excluded from consideration, as the Reddit communities used in this study (r/politics, r/TheBulwark) are dedicated to U.S. political discourse and would not provide a meaningful information channel for foreign or non-political markets. Within this scope, five markets were selected based on two criteria: (1) settlement occurred between January 1 and May 17, 2026, ensuring that the full market lifecycle fell within the available Reddit data window; and (2) total trading volume exceeded 1 million contracts, ensuring a sufficient level of market activity for time-series analysis. Markets settled after May 17, 2026 but with active trading during the Reddit data window were also considered, with analysis restricted to the overlapping period.</p>
+
+  <p>For events with multiple constituent sub-markets (e.g., the Virginia redistricting referendum, where separate contracts traded the binary outcome and the margin of victory), daily trading volumes were aggregated across all sub-markets into a single composite series. This aggregation is appropriate because the underlying informational driver — public discussion of the event — is common to all sub-markets. The Hormuz market is a "when will it happen?" event composed of cumulative deadline contracts ("will traffic return to normal before date <em>D</em>?"); for this event the daily volumes of the four sub-markets that had <em>finalized</em> within the study window were summed, while sub-markets still trading toward later 2026–2027 horizons were excluded. The settlement day (final trading day) was excluded from all markets to avoid contamination from mechanical position-closing activity, which generates anomalously high volume unrelated to information-driven trading; for the Hormuz composite, which contains several deadline contracts resolving on different dates, the two sub-market settlement days falling inside the analysis window were likewise removed.</p>
+
+  <p>The five markets, along with their tickers, settlement dates, and total volumes, are described in Table 1.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 1</p>
+    <p class="table-title noindent"><em>Kalshi Prediction Markets Included in the Analysis</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th>Ticker</th>
+          <th>Description</th>
+          <th class="center">Settled</th>
+          <th class="right">Total Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Govt Shutdown</td><td>KXGOVTSHUTLENGTH-26FEB07</td><td>How long will the government shutdown last?</td><td class="center">May 2, 2026</td><td class="right">20.5M</td></tr>
+        <tr><td>Fed Chair</td><td>KXFEDCHAIRCONFIRM</td><td>Federal Reserve Chair confirmation</td><td class="center">May 13, 2026</td><td class="right">9.8M</td></tr>
+        <tr><td>Virginia</td><td>KXVIRGINIAREDISTRICT (combined)</td><td>Virginia redistricting referendum (combined)</td><td class="center">Apr 22 / May 16, 2026</td><td class="right">16.2M</td></tr>
+        <tr><td>Texas Senate</td><td>KXTXSENDPRIMARYMOV-26MAR03</td><td>Texas Senate Democratic primary margin</td><td class="center">Mar 20, 2026</td><td class="right">5.5M</td></tr>
+        <tr><td>Hormuz</td><td>KXHORMUZNORM-26MAR17</td><td>When will Strait of Hormuz traffic return to normal? (finalized threshold sub-markets)</td><td class="center">Apr 21 – Jun 2, 2026</td><td class="right">10.2M</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> Total volume is the sum of all sub-market contracts for multi-market events. For Hormuz, only the four <em>finalized</em> threshold sub-markets are included (the event also contains sub-markets still trading at later horizons, which are excluded). Settlement day excluded from analysis for all markets; for Hormuz, the two intra-window sub-market settlement days are removed.</p>
+  </div>
+
+  <h3 class="l3">Reddit Data</h3>
+
+  <p>Reddit post data were drawn from three subreddits focused exclusively on U.S. political discourse: r/politics (62,355 posts, January 1–May 17, 2026), r/TheBulwark (5,801 posts, December 3, 2025–March 28, 2026), and r/PoliticalDiscussion (5,578 posts, January 1–June 9, 2026). All three communities are dedicated to U.S. political news and commentary: r/politics is the largest general-purpose U.S. politics forum on Reddit, r/TheBulwark is a politically engaged centre-right commentary community, and r/PoliticalDiscussion is a moderated forum for substantive political analysis. Combining the three broadens coverage of the political-attention signal while preserving its U.S.-political focus. A fourth candidate subreddit, r/WallStreetBets (a financial trading community), was considered but excluded: its posts reflect retail investor sentiment about financial markets rather than political discourse, and its inclusion would introduce a non-political signal source into a study designed to measure the effect of political public attention on prediction market trading. The three communities differ in their temporal coverage — r/TheBulwark data end on March 28, 2026, so for markets whose trading windows extend into April–May the signal is carried predominantly by r/politics and r/PoliticalDiscussion. Posts were archived in JSONL format, with each record containing a UTC timestamp and post title. Only post titles — rather than body text — were used for keyword filtering, as titles are the primary unit of information presentation on Reddit and are more consistently populated across posts.</p>
+
+  <p>For each market, a set of event-specific keywords was constructed to identify posts relevant to that event, applied as case-insensitive regular expressions to post titles. The keyword sets were designed to maximise precision — capturing posts genuinely about the target event while excluding superficially similar but unrelated discussion. The Government Shutdown set matched <em>shutdown</em>, <em>continuing resolution</em>, <em>CR</em>, and <em>DHS funding</em>. The Hormuz set matched the single highly specific term <em>hormuz</em> (the broader term <em>iran</em> was deliberately excluded, as it matched thousands of unrelated foreign-policy posts). The Fed Chair set matched <em>fed chair</em>, <em>federal reserve chair</em>, <em>fed chairman</em>, the nominee's surname (<em>Warsh</em>, bounded to avoid matching "warship"), <em>fed pick</em>, <em>fed nominee</em>, and <em>Powell</em>. The Texas Senate set required the term <em>texas</em> together with one of <em>senate</em>, <em>primary</em>, <em>runoff</em>, or the candidate name <em>Talarico</em>, while excluding posts referring to the unrelated Texas <em>state senate</em> special election. The Virginia set required <em>virginia</em> together with one of <em>redistrict</em>, <em>gerrymander</em>, or <em>referendum</em>, while excluding <em>west virginia</em>. Daily post counts were computed as the number of posts across all three subreddits whose titles matched the event's keyword set; days with no matching posts were assigned a count of zero.</p>
+
+  <h3 class="l3">Merged Dataset and Reddit Engagement</h3>
+
+  <p>For each market, the daily Kalshi volume series and the daily Reddit post count series were merged by date, with Kalshi trading dates forming the basis. Reddit counts were set to zero on days not present in the Reddit data for that keyword filter. The final merged dataset covers 55 to 112 daily observations per market, depending on the market's trading window and settlement date.</p>
+
+  <p>One descriptive feature of the merged data is the <em>Reddit zero-rate</em> — the proportion of days in a market's trading window on which the keyword filter returned zero Reddit posts. This statistic varies across markets, from 10% for the Hormuz market (where the keyword "hormuz" is highly specific yet matched on nearly every day of the crisis) to 60% for the Virginia redistricting market. The Reddit zero-rate is reported throughout as a proxy for the <em>volume</em> of Reddit engagement. As the results will show, however, engagement volume is not what determines whether Reddit <em>leads</em> trading: the Hormuz market combines the lowest zero-rate of all five markets with no detectable lead, so the zero-rate is descriptive rather than the central interpretive variable.</p>
+
+  <p>Descriptive statistics for all five markets are presented in Table 2.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 2</p>
+    <p class="table-title noindent"><em>Descriptive Statistics for Reddit Post Count and Kalshi Trading Volume by Market</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th class="center"><em>n</em></th>
+          <th class="center">Reddit Zero-Rate</th>
+          <th class="center">Reddit <em>M</em> (<em>SD</em>)</th>
+          <th class="center">Reddit Max</th>
+          <th class="center">Volume <em>M</em> (<em>SD</em>)</th>
+          <th class="center">Volume Max</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Govt Shutdown</td><td class="center">78</td><td class="center">24%</td><td class="center">3.64 (4.70)</td><td class="center">23</td><td class="center">257,431 (394,490)</td><td class="center">2,427,375</td></tr>
+        <tr><td>Fed Chair</td><td class="center">70</td><td class="center">50%</td><td class="center">1.70 (3.25)</td><td class="center">14</td><td class="center">130,453 (171,363)</td><td class="center">1,159,213</td></tr>
+        <tr><td>Virginia</td><td class="center">112</td><td class="center">60%</td><td class="center">1.29 (3.92)</td><td class="center">29</td><td class="center">143,608 (656,757)</td><td class="center">6,700,128</td></tr>
+        <tr><td>Texas Senate</td><td class="center">55</td><td class="center">35%</td><td class="center">2.89 (6.62)</td><td class="center">47</td><td class="center">99,302 (440,403)</td><td class="center">3,015,653</td></tr>
+        <tr><td>Hormuz</td><td class="center">60</td><td class="center">10%</td><td class="center">9.05 (8.87)</td><td class="center">42</td><td class="center">132,588 (122,215)</td><td class="center">620,009</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> Reddit Zero-Rate = proportion of days with zero keyword-matched posts across r/politics, r/TheBulwark, and r/PoliticalDiscussion. Volume statistics are in number of contracts. <em>M</em> = mean; <em>SD</em> = standard deviation. Settlement day excluded. Hormuz figures are for the composite of finalized threshold sub-markets over the Mar 17–May 17 window.</p>
+  </div>
+
+  <div class="figure-wrap">
+    <p class="figure-label noindent">Figure 1</p>
+    <p class="figure-title noindent"><em>Daily Reddit Post Count (Grey Bars) and Kalshi Trading Volume (Coloured Line) for All Five Markets</em></p>
+    <img src="fig1_time_series_all_markets.png" alt="Time series of Reddit post count and Kalshi trading volume for all 5 markets" class="figure-img">
+    <p class="figure-note noindent"><em>Note.</em> Left y-axis (grey): daily Reddit keyword-matched post count across the three communities. Right y-axis (coloured): daily Kalshi trading volume in thousands of contracts. Bar colour indicates regime: blue = Leading (significant one-directional Reddit → Volume Granger causality with a cross-correlation peak at lag +1); grey = Contemporaneous (cross-correlation peak at lag 0, no one-day lead). Settlement day excluded. Annotation boxes show Granger Reddit → Volume significance and the location of the peak cross-correlation.</p>
+  </div>
+
+  <p>Both series exhibit strong positive skewness across all markets, consistent with the distributional properties typical of count data and financial trading volumes. The variation in Reddit zero-rate across markets is substantively meaningful and not a data quality artefact: nationally prominent events generate sustained Reddit activity, while niche markets attract little to no matching discussion in the subreddits studied.</p>
+
+  <h2 class="l2">Analytical Strategy</h2>
+
+  <p>The analysis proceeds through five sequential steps: stationarity testing, first-differencing where required, lag order selection via the Bayesian Information Criterion (BIC), Granger causality testing in both directions, and cross-correlation analysis. All analyses were conducted in Python 3.9 using <code>statsmodels</code> (version 0.14) and <code>scipy</code> (version 1.10).</p>
+
+  <h2 class="l2">Step 1: Stationarity Testing</h2>
+
+  <p>Granger causality tests are only valid when all series in the bivariate model are stationary (Engle &amp; Granger, 1987). A non-stationary series — one with a unit root — produces spurious regression results, inflating test statistics and generating misleading <em>p</em>-values. The Augmented Dickey-Fuller (ADF) test (Dickey &amp; Fuller, 1979) was applied to each raw series to assess the presence of a unit root. The ADF test checks for non-stationarity by estimating the following regression:</p>
+
+  <p class="noindent" style="text-indent:0.5in; font-style:italic;">Δ<em>y</em><sub><em>t</em></sub> = α + β<em>t</em> + γ<em>y</em><sub><em>t</em>−1</sub> + δ<sub>1</sub>Δ<em>y</em><sub><em>t</em>−1</sub> + δ<sub>2</sub>Δ<em>y</em><sub><em>t</em>−2</sub> + ··· + δ<sub><em>p</em></sub>Δ<em>y</em><sub><em>t</em>−<em>p</em></sub> + ε<sub><em>t</em></sub></p>
+
+  <p>where Δ<em>y</em><sub><em>t</em></sub> = <em>y</em><sub><em>t</em></sub> − <em>y</em><sub><em>t</em>−1</sub> is the first difference of the series (today's value minus yesterday's); <em>y</em><sub><em>t</em>−1</sub> is the lagged level of the series; γ is the key coefficient — if γ = 0, the series contains a unit root and is non-stationary; δ<sub>1</sub> … δ<sub><em>p</em></sub> are coefficients on lagged differences, included to absorb any remaining autocorrelation in the residuals and ensure the test statistic is valid; α is a constant; and β<em>t</em> is an optional time trend. The null hypothesis H<sub>0</sub>: γ = 0 (unit root present; series is non-stationary) is tested against the alternative H<sub>1</sub>: γ &lt; 0 (no unit root; series is stationary). Rejection at <em>p</em> &lt; .05 is taken as evidence of stationarity. Lag length <em>p</em> within the ADF procedure was selected automatically via the Akaike Information Criterion (AIC), which balances model fit against over-parameterisation by penalising unnecessary lags.</p>
+
+  <h2 class="l2">Step 2: First Differencing</h2>
+
+  <p>For the primary specification, <strong>all series were first-differenced</strong> (Δ<em>y</em><sub><em>t</em></sub> = <em>y</em><sub><em>t</em></sub> − <em>y</em><sub><em>t</em>−1</sub>), regardless of their levels stationarity. This uniform treatment is adopted for two reasons. First, it places every market on an identical footing, so that Granger and cross-correlation results are directly comparable across markets. Second, and more importantly, even series that are stationary in levels retain first-order autocorrelation that can induce <em>spurious</em> lag-1 Granger causality: when the predictor is persistent, its lagged value proxies for its contemporaneous value, so a genuinely same-day relationship can masquerade as a one-day lead. First-differencing removes this persistence and is therefore the conservative choice for lead–lag inference. As the Results show, this distinction is not hypothetical — for the Virginia market, a forward Granger effect that is significant on levels (<em>p</em> = .004) becomes non-significant once the series are differenced (<em>p</em> = .056), while its cross-correlation peaks unambiguously at lag 0. The Granger tests on the levels series are therefore retained as a robustness check and reported alongside the differenced results; the divergence between the two specifications is itself diagnostic. ADF re-tests confirm that all differenced series are stationary (<em>p</em> &lt; .001 in every case).</p>
+
+  <h2 class="l2">Step 3: Lag Order Selection</h2>
+
+  <p>The lag order for the Granger causality test determines how many days of history are included in the predictive model. Too few lags may miss delayed relationships; too many lags consume degrees of freedom and reduce power, which is a serious concern in samples of 55–112 observations. A Vector Autoregression (VAR) model was estimated on the bivariate (possibly differenced) series for each market, and the lag order minimising the Bayesian Information Criterion (BIC; Schwarz, 1978) was selected. The BIC was preferred over the AIC because it applies a stronger penalty for additional parameters, making it more conservative — an appropriate choice given the relatively small sample sizes. Two constraints limit the maximum lag tested. First, a practical cap of <em>p</em> = 5: for daily data, five days corresponds to one trading week and represents the natural periodicity for short-horizon financial time series; lags beyond this have no strong theoretical motivation and are not reported in the daily financial time-series literature. Second, an <em>n</em>/10 data-driven cap: each additional lag adds two parameters to estimate (one for each variable), and the rule of thumb that a model should have no fewer than ten observations per parameter implies maximum lag ≤ <em>n</em>/10. The effective maximum is min(5, ⌊<em>n</em>/10⌋), which equals 5 for all five markets in this study (the smallest, Texas Senate at <em>n</em> = 55, comfortably permits five).
+
+Because BIC identifies the lag with the best fit-complexity trade-off rather than the true population lag, Granger tests were also conducted at neighbouring lags from 1 through min(5, BIC lag + 2). This serves as a specification robustness check: if the Reddit → Volume effect only appears at exactly the BIC-selected lag and disappears one or two lags above, the result could reflect an artefact of the specific model chosen rather than a genuine predictive relationship. A robust finding should be visible across a range of reasonable lag specifications. Full per-lag results for all markets are reported in Appendix A.</p>
+
+  <p>To make the degrees-of-freedom constraint concrete, consider the VAR equation estimated for each lag order <em>p</em>:</p>
+
+  <p class="noindent" style="text-indent:0.5in; font-style:italic;">Volume<sub><em>t</em></sub> = <em>a</em><sub>1</sub>Volume<sub><em>t</em>−1</sub> + ··· + <em>a</em><sub><em>p</em></sub>Volume<sub><em>t</em>−<em>p</em></sub> + <em>b</em><sub>1</sub>Reddit<sub><em>t</em>−1</sub> + ··· + <em>b</em><sub><em>p</em></sub>Reddit<sub><em>t</em>−<em>p</em></sub> + <em>c</em> + ε<sub><em>t</em></sub></p>
+
+  <p>At lag <em>p</em>, this equation contains 2<em>p</em> + 1 free parameters (<em>p</em> volume lags, <em>p</em> Reddit lags, and a constant). Each additional lag therefore adds two parameters while simultaneously consuming one observation as additional history. The ratio of usable observations to estimated parameters — a direct measure of how thinly the data are spread — deteriorates rapidly at higher lags. A conventional rule of thumb in econometrics requires at least 10 observations per parameter for reliable estimation (Greene, 2012).</p>
+
+  <h2 class="l2">Step 4: Granger Causality Testing</h2>
+
+  <p>The Granger causality test (Granger, 1969) compares a restricted VAR model — in which each variable is regressed only on its own lagged values — against an unrestricted model that also includes lagged values of the other variable. The test statistic is an F-ratio of the residual sums of squares from the restricted and unrestricted models:</p>
+
+  <p class="noindent" style="text-indent:0.5in; font-style:italic;">F = [(RSS<sub>R</sub> − RSS<sub>U</sub>) / q] / [RSS<sub>U</sub> / (T − k)]</p>
+
+  <p>where RSS<sub>R</sub> and RSS<sub>U</sub> are the restricted and unrestricted residual sums of squares, <em>q</em> is the number of restrictions (equal to the lag order), <em>T</em> is the number of observations, and <em>k</em> is the number of estimated parameters in the unrestricted model. A significant F-statistic indicates that lagged values of the predictor variable contain information about the target variable beyond what the target's own history contains.</p>
+
+  <p>Both directions were tested for every market: Reddit post count → Kalshi volume (<em>Reddit leads Volume</em>) and Kalshi volume → Reddit post count (<em>Volume leads Reddit</em>). Testing the reverse direction serves as a specificity check. If volume also Granger-causes Reddit, the relationship is bidirectional, and the interpretation of Reddit as an independent leading indicator is weakened. A finding of unidirectional Reddit → Volume Granger causality — significant in the forward direction, not sustained in the reverse — is the result predicted by the information channel hypothesis.</p>
+
+
+  <h2 class="l2">Step 5: Cross-Correlation Analysis</h2>
+
+  <p>Granger causality tests provide binary hypothesis test results but do not describe the temporal shape of the relationship — in particular, whether a predictive relationship reflects a genuine <em>lead</em> (a peak at a positive lag) or a <em>contemporaneous</em> co-movement (a peak at lag 0). Cross-correlation analysis was conducted to complement the Granger tests by computing the Pearson correlation between the Reddit series at time <em>t</em> and the volume series at time <em>t</em> + <em>k</em>, for lags <em>k</em> from −7 to +7 days. Positive lags indicate Reddit leading volume; negative lags indicate volume leading Reddit. A 95% confidence band of ±1.96/√<em>n</em> was applied as an approximate threshold under the white-noise null. To isolate lead-lag dynamics from shared trends, all cross-correlations were computed on the <em>first-differenced</em> series for every market. This is essential for the leading-versus-contemporaneous distinction: on raw levels, two series that both trend upward toward an event produce a large contemporaneous correlation that can spill into adjacent lags and mimic a lead. Differencing removes the common trend, so that a peak at lag +1 reflects a genuine one-day-ahead relationship in the day-to-day changes, while a peak at lag 0 reflects same-day co-movement.</p>
+
+  <!-- ─── 4. RESULTS ──────────────────────────────────────────────────────── -->
+  <h1 class="l1">Results</h1>
+
+  <h2 class="l2">Step 1: Stationarity of Raw Series</h2>
+
+  <p>Table 3 reports, for each market, whether the raw Reddit and trading-volume series are statistically stable over time or instead drift — and the resulting pre-processing decision. Govt Shutdown, Fed Chair, and Hormuz each contain at least one drifting (non-stationary) series; Virginia and Texas Senate are stable in levels. For the primary analysis all five markets are nonetheless analysed as day-to-day changes (first differences; Methodology, Step 2) — including the two stable markets, because their Reddit series still carry enough day-to-day persistence (0.30 and 0.32) to manufacture a false one-day lead if left untransformed. The original levels results are retained as a robustness check (Table 5).</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 3</p>
+    <p class="table-title noindent"><em>Augmented Dickey–Fuller Unit-Root Tests on the Raw Series, and Pre-Processing Decision</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th>Series</th>
+          <th class="center">ADF statistic</th>
+          <th class="center"><em>p</em></th>
+          <th class="center">Conclusion</th>
+          <th class="center">Pre-processing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="2">Govt Shutdown</td><td>Reddit post count</td><td class="center">−2.26</td><td class="center">.184</td><td class="center">Non-stationary</td><td class="center" rowspan="2">Differenced</td></tr>
+        <tr><td>Kalshi volume</td><td class="center">−1.14</td><td class="center">.700</td><td class="center">Non-stationary</td></tr>
+        <tr><td rowspan="2">Fed Chair</td><td>Reddit post count</td><td class="center">−7.51</td><td class="center">&lt; .001</td><td class="center">Stationary</td><td class="center" rowspan="2">Differenced</td></tr>
+        <tr><td>Kalshi volume</td><td class="center">0.10</td><td class="center">.966</td><td class="center">Non-stationary</td></tr>
+        <tr><td rowspan="2">Virginia</td><td>Reddit post count</td><td class="center">−7.69</td><td class="center">&lt; .001</td><td class="center">Stationary</td><td class="center" rowspan="2">Differenced</td></tr>
+        <tr><td>Kalshi volume</td><td class="center">−8.12</td><td class="center">&lt; .001</td><td class="center">Stationary</td></tr>
+        <tr><td rowspan="2">Texas Senate</td><td>Reddit post count</td><td class="center">−5.18</td><td class="center">&lt; .001</td><td class="center">Stationary</td><td class="center" rowspan="2">Differenced</td></tr>
+        <tr><td>Kalshi volume</td><td class="center">−4.48</td><td class="center">&lt; .001</td><td class="center">Stationary</td></tr>
+        <tr><td rowspan="2">Hormuz</td><td>Reddit post count</td><td class="center">−1.90</td><td class="center">.334</td><td class="center">Non-stationary</td><td class="center" rowspan="2">Differenced</td></tr>
+        <tr><td>Kalshi volume</td><td class="center">−2.27</td><td class="center">.182</td><td class="center">Non-stationary</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> Augmented Dickey–Fuller (ADF) unit-root tests on the raw (levels) series. The null hypothesis is the presence of a unit root (non-stationarity); a series is concluded to be <em>stationary</em> when the null is rejected at <em>p</em> &lt; .05, indicating it is statistically stable over time rather than drifting. The test regression includes an intercept, and the augmentation lag length was selected by the Akaike Information Criterion. All five markets were first-differenced (analysed as day-to-day changes) for the primary analysis — including the two markets that are stationary in levels (Virginia, Texas Senate) — because their Reddit series retain sufficient day-to-day persistence to risk a spurious one-day lead; see Methodology (Step 2) and the levels-versus-differenced robustness check in Table 5.</p>
+  </div>
+
+  <h2 class="l2">Step 2: First Differencing</h2>
+
+  <p>All five markets were first-differenced for the primary specification (Methodology, Step 2). Table 3a reports ADF statistics for the differenced series; stationarity is confirmed for every series at <em>p</em> &lt; .001, so the differenced data are valid inputs to the Granger and cross-correlation tests.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 3a</p>
+    <p class="table-title noindent"><em>ADF Stationarity Test Results After First Differencing</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th>Series</th>
+          <th class="center">ADF Statistic</th>
+          <th class="center"><em>p</em>-value</th>
+          <th class="center">Stationary?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="2">Govt Shutdown</td><td>ΔReddit post count</td><td class="center">−5.17</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td>ΔKalshi volume</td><td class="center">−6.27</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td rowspan="2">Fed Chair</td><td>ΔReddit post count</td><td class="center">−7.36</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td>ΔKalshi volume</td><td class="center">−11.41</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td rowspan="2">Virginia</td><td>ΔReddit post count</td><td class="center">−8.69</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td>ΔKalshi volume</td><td class="center">−6.63</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td rowspan="2">Texas Senate</td><td>ΔReddit post count</td><td class="center">−6.27</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td>ΔKalshi volume</td><td class="center">−7.48</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td rowspan="2">Hormuz</td><td>ΔReddit post count</td><td class="center">−6.82</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+        <tr><td>ΔKalshi volume</td><td class="center">−9.36</td><td class="center">&lt; .001</td><td class="center">Yes</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> Δ denotes the first-differenced series (<em>y</em><sub><em>t</em></sub> − <em>y</em><sub><em>t</em>−1</sub>). All five markets are first-differenced for the primary specification.</p>
+  </div>
+
+  <h2 class="l2">Step 3: Lag Order Selection</h2>
+
+  <p>Table 3b reports the BIC-selected lag order and observations-per-parameter diagnostics for all five differenced markets. BIC selects lag 1 for four of the five markets; for Virginia, BIC is effectively tied between lags 1 and 2 (the two scores differ by less than 0.01), and lag 1 is adopted uniformly for comparability and consistency with the one-day-lead hypothesis. (The implications of Virginia's lag-2 specification are addressed directly in the robustness analysis of Step 4.) At lag 1, observations per parameter range from 17.7 (Texas Senate) to 36.7 (Virginia), comfortably above the rule-of-thumb minimum of 10 in every case — including the Hormuz market, analysed here as the composite of the four finalized "return to normal" threshold sub-markets (<em>n</em> = 60), which yields 19.3 observations per parameter. No market's result can therefore be attributed to insufficient power.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 3b</p>
+    <p class="table-title noindent"><em>Lag Order Selection Diagnostics: Observations per Parameter and BIC Score by Lag</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th class="center">Lag <em>p</em></th>
+          <th class="center">Usable <em>n</em></th>
+          <th class="center">Parameters</th>
+          <th class="center">Obs / Param</th>
+          <th class="center">BIC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="5">Govt Shutdown (<em>n</em> = 78)</td><td class="center"><strong>1</strong></td><td class="center">76</td><td class="center">3</td><td class="center"><strong>25.3</strong></td><td class="center"><strong>28.05 ←</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">75</td><td class="center">5</td><td class="center">15.0</td><td class="center">28.18</td></tr>
+        <tr><td class="center">3</td><td class="center">74</td><td class="center">7</td><td class="center">10.6</td><td class="center">28.30</td></tr>
+        <tr><td class="center">4</td><td class="center">73</td><td class="center">9</td><td class="center">8.1 ⚠</td><td class="center">28.40</td></tr>
+        <tr><td class="center">5</td><td class="center">72</td><td class="center">11</td><td class="center">6.5 ⚠</td><td class="center">28.64</td></tr>
+        <tr><td rowspan="5">Fed Chair (<em>n</em> = 70)</td><td class="center"><strong>1</strong></td><td class="center">68</td><td class="center">3</td><td class="center"><strong>22.7</strong></td><td class="center"><strong>26.83 ←</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">67</td><td class="center">5</td><td class="center">13.4</td><td class="center">26.95</td></tr>
+        <tr><td class="center">3</td><td class="center">66</td><td class="center">7</td><td class="center">9.4 ⚠</td><td class="center">27.13</td></tr>
+        <tr><td class="center">4</td><td class="center">65</td><td class="center">9</td><td class="center">7.2 ⚠</td><td class="center">27.28</td></tr>
+        <tr><td class="center">5</td><td class="center">64</td><td class="center">11</td><td class="center">5.8 ⚠</td><td class="center">27.33</td></tr>
+        <tr><td rowspan="5">Virginia (<em>n</em> = 112)</td><td class="center"><strong>1</strong></td><td class="center">110</td><td class="center">3</td><td class="center"><strong>36.7</strong></td><td class="center"><strong>29.69 ←</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">109</td><td class="center">5</td><td class="center">21.8</td><td class="center">29.69</td></tr>
+        <tr><td class="center">3</td><td class="center">108</td><td class="center">7</td><td class="center">15.4</td><td class="center">29.75</td></tr>
+        <tr><td class="center">4</td><td class="center">107</td><td class="center">9</td><td class="center">11.9</td><td class="center">29.85</td></tr>
+        <tr><td class="center">5</td><td class="center">106</td><td class="center">11</td><td class="center">9.6 ⚠</td><td class="center">30.01</td></tr>
+        <tr><td rowspan="5">Texas Senate (<em>n</em> = 55)</td><td class="center"><strong>1</strong></td><td class="center">53</td><td class="center">3</td><td class="center"><strong>17.7</strong></td><td class="center"><strong>28.23 ←</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">52</td><td class="center">5</td><td class="center">10.4</td><td class="center">28.46</td></tr>
+        <tr><td class="center">3</td><td class="center">51</td><td class="center">7</td><td class="center">7.3 ⚠</td><td class="center">28.63</td></tr>
+        <tr><td class="center">4</td><td class="center">50</td><td class="center">9</td><td class="center">5.6 ⚠</td><td class="center">28.88</td></tr>
+        <tr><td class="center">5</td><td class="center">49</td><td class="center">11</td><td class="center">4.5 ⚠</td><td class="center">29.07</td></tr>
+        <tr><td rowspan="5">Hormuz (<em>n</em> = 60)</td><td class="center"><strong>1</strong></td><td class="center">58</td><td class="center">3</td><td class="center"><strong>19.3</strong></td><td class="center"><strong>27.97 ←</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">57</td><td class="center">5</td><td class="center">11.4</td><td class="center">27.99</td></tr>
+        <tr><td class="center">3</td><td class="center">56</td><td class="center">7</td><td class="center">8.0 ⚠</td><td class="center">28.01</td></tr>
+        <tr><td class="center">4</td><td class="center">55</td><td class="center">9</td><td class="center">6.1 ⚠</td><td class="center">28.24</td></tr>
+        <tr><td class="center">5</td><td class="center">54</td><td class="center">11</td><td class="center">4.9 ⚠</td><td class="center">28.41</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> Computed on the first-differenced series (usable <em>n</em> = market <em>n</em> − 1 − <em>p</em>). Parameters = 2<em>p</em> + 1 (two lags per variable plus constant). ← = BIC-selected lag (lag 1 adopted uniformly; for Virginia the lag-1 and lag-2 BIC differ by &lt; 0.01). ⚠ = below the rule-of-thumb minimum of 10 observations per parameter. Maximum lag tested = min(5, <em>n</em>/10) = 5 for all markets. BIC values are not comparable across markets because they depend on the scale of the volume series.</p>
+  </div>
+
+  <h2 class="l2">Step 4: Granger Causality</h2>
+
+  <p>Table 4 reports the Granger causality F-tests for all five markets, computed on the first-differenced series at lag 1, in both the forward (Reddit → Volume) and reverse (Volume → Reddit) directions. The forward test identifies markets in which Reddit's recent history improves the prediction of trading volume; because the Granger F-test alone cannot distinguish a genuine one-day lead from a contemporaneous relationship leaking through autocorrelation, the classification is finalised in Step 5 using the location of the cross-correlation peak (lag +1 = lead; lag 0 = contemporaneous). Full per-market results across all tested lags are provided in Appendix A.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 4</p>
+    <p class="table-title noindent"><em>Bivariate Granger Causality F-Tests at BIC-Selected Lag, All Five Markets</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th class="center"><em>n</em></th>
+          <th class="center">Zero-Rate</th>
+          <th class="center">Series</th>
+          <th class="center">BIC Lag</th>
+          <th class="center">Reddit→Vol <em>F</em> (<em>df</em>)</th>
+          <th class="center"><em>p</em></th>
+          <th class="center">Vol→Reddit <em>F</em> (<em>df</em>)</th>
+          <th class="center"><em>p</em></th>
+          <th class="center">Classification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Govt Shutdown</td><td class="center">78</td><td class="center">24%</td><td class="center">Diff.</td><td class="center">1</td><td class="center">21.20 (1,73)</td><td class="center">&lt; .001</td><td class="center">5.76 (1,73)</td><td class="center">.019<sup>a</sup></td><td class="center"><strong>Leading ✓</strong></td></tr>
+        <tr><td>Fed Chair</td><td class="center">70</td><td class="center">50%</td><td class="center">Diff.</td><td class="center">1</td><td class="center">8.56 (1,65)</td><td class="center">.005</td><td class="center">1.45 (1,65)</td><td class="center">.233</td><td class="center"><strong>Leading ✓</strong></td></tr>
+        <tr><td>Virginia</td><td class="center">112</td><td class="center">60%</td><td class="center">Diff.</td><td class="center">1</td><td class="center">3.73 (1,107)</td><td class="center">.056<sup>b</sup></td><td class="center">0.02 (1,107)</td><td class="center">.884</td><td class="center">Contemporaneous</td></tr>
+        <tr><td>Texas Senate</td><td class="center">55</td><td class="center">35%</td><td class="center">Diff.</td><td class="center">1</td><td class="center">3.75 (1,50)</td><td class="center">.059</td><td class="center">3.18 (1,50)</td><td class="center">.080</td><td class="center">Contemporaneous</td></tr>
+        <tr><td>Hormuz</td><td class="center">60</td><td class="center">10%</td><td class="center">Diff.</td><td class="center">1</td><td class="center">2.34 (1,55)</td><td class="center">.132</td><td class="center">0.05 (1,55)</td><td class="center">.826</td><td class="center">No robust relation</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> All markets analysed on first-differenced series (Diff.) at lag 1. Zero-Rate = proportion of days with zero Reddit posts. Classification combines the differenced Granger result with the location of the cross-correlation peak (Table 6): <em>Leading</em> = significant forward differenced Granger and a peak at lag +1; <em>Contemporaneous</em> = peak at lag 0 (same-day), whether or not the differenced Granger reaches significance; <em>No robust relation</em> = no significant Granger in either direction and a cross-correlation that does not survive the robustness checks of Step 4.</p>
+    <p class="table-note noindent"><sup>a</sup> Vol→Reddit significant at lag 1 only; not sustained at lags 2–3 (<em>p</em> &gt; .14). The forward effect is robust and sustained across lags 1–5, so the relationship is directional Reddit → Volume.</p>
+    <p class="table-note noindent"><sup>b</sup> Virginia's forward effect is significant on the <em>levels</em> series (<em>p</em> = .004) but not on the differenced series (<em>p</em> = .056); its cross-correlation peaks at lag 0, not lag +1. The levels result is a persistence artefact (Table 5), so Virginia is classified Contemporaneous.</p>
+  </div>
+
+  <p>Table 5 reproduces the Table 4 analysis on the un-differenced (levels) series as a robustness check, using identical columns so the two can be read directly against each other. For four of the five markets the two tables agree: Govt Shutdown and Fed Chair retain a significant forward (Reddit → Volume) effect with a weak or absent reverse effect, Texas Senate is non-significant under both specifications, and Hormuz is non-significant in every cell. The one consequential difference is Virginia. On the levels series (Table 5) its forward effect is significant, <em>F</em>(1, 108) = 8.88, <em>p</em> = .004, and read in isolation would place Virginia among the leading markets; on the differenced series (Table 4) the same effect is non-significant, <em>F</em>(1, 107) = 3.73, <em>p</em> = .056. This divergence is a persistence artefact: Virginia's Reddit series is autocorrelated (first-order autocorrelation = 0.30), so on the levels series yesterday's Reddit proxies for today's and a genuinely <em>same-day</em> relationship registers as a one-day lead. Differencing removes the artefact, and the cross-correlation (Table 6) confirms Virginia's peak is at lag 0, not lag +1. Because the two tables agree wherever persistence cannot distort the result and diverge only for the single market where it can, the differenced specification in Table 4 is the defensible basis for classification.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 5</p>
+    <p class="table-title noindent"><em>Robustness: Bivariate Granger Causality F-Tests on the Levels (Un-Differenced) Series, All Five Markets</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th class="center"><em>n</em></th>
+          <th class="center">Zero-Rate</th>
+          <th class="center">Series</th>
+          <th class="center">BIC Lag</th>
+          <th class="center">Reddit→Vol <em>F</em> (<em>df</em>)</th>
+          <th class="center"><em>p</em></th>
+          <th class="center">Vol→Reddit <em>F</em> (<em>df</em>)</th>
+          <th class="center"><em>p</em></th>
+          <th class="center">Classification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Govt Shutdown</td><td class="center">78</td><td class="center">24%</td><td class="center">Levels</td><td class="center">1</td><td class="center">10.51 (1,74)</td><td class="center">.002</td><td class="center">2.26 (1,74)</td><td class="center">.137</td><td class="center"><strong>Leading ✓</strong></td></tr>
+        <tr><td>Fed Chair</td><td class="center">70</td><td class="center">50%</td><td class="center">Levels</td><td class="center">1</td><td class="center">2.96 (1,66)</td><td class="center">.090</td><td class="center">0.05 (1,66)</td><td class="center">.830</td><td class="center"><strong>Leading ✓</strong></td></tr>
+        <tr><td>Virginia</td><td class="center">112</td><td class="center">60%</td><td class="center">Levels</td><td class="center">1</td><td class="center">8.88 (1,108)</td><td class="center">.004<sup>a</sup></td><td class="center">0.06 (1,108)</td><td class="center">.803</td><td class="center">Contemporaneous</td></tr>
+        <tr><td>Texas Senate</td><td class="center">55</td><td class="center">35%</td><td class="center">Levels</td><td class="center">1</td><td class="center">3.38 (1,51)</td><td class="center">.072</td><td class="center">1.56 (1,51)</td><td class="center">.218</td><td class="center">Contemporaneous</td></tr>
+        <tr><td>Hormuz</td><td class="center">60</td><td class="center">10%</td><td class="center">Levels</td><td class="center">1</td><td class="center">0.98 (1,56)</td><td class="center">.327</td><td class="center">0.63 (1,56)</td><td class="center">.430</td><td class="center">No robust relation</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> This table replicates Table 4 on the un-differenced (levels) series; all values are lag-1 Granger causality F-tests, and "Series" = Levels for every market. The Classification column reproduces the final verdict from the primary (differenced) analysis in Table 4. Comparison with Table 4 shows agreement for every market except Virginia. Reddit first-order autocorrelation — the persistence that drives the Virginia divergence — is 0.69 (Govt Shutdown), 0.03 (Fed Chair), 0.30 (Virginia), 0.32 (Texas Senate), and 0.37 (Hormuz); cross-correlation peaks (Table 6) lie at lag +1 for the leading markets and lag 0 for the others.</p>
+    <p class="table-note noindent"><sup>a</sup> Virginia's forward effect is significant on the levels series but not on the differenced series (Table 4: <em>F</em>(1, 107) = 3.73, <em>p</em> = .056); this divergence reflects Reddit persistence and is why Virginia is classified Contemporaneous rather than Leading.</p>
+  </div>
+
+  <h3 class="l3">Leading Markets: A One-Day Reddit Lead</h3>
+
+  <p>For the two slowly-developing markets, the differenced Granger test is significant <em>and</em> the cross-correlation peaks at lag +1 — the joint signature of a genuine one-day lead. The Government Shutdown market showed a strong and robust forward effect: <em>F</em>(1, 73) = 21.20, <em>p</em> &lt; .001, sustained across all five lags (<em>p</em> ≤ .008 throughout; Appendix A). The reverse direction was significant at lag 1 (<em>p</em> = .019) but collapsed at lags 2–5 (<em>p</em> &gt; .14), confirming the relationship is directional rather than bidirectional — consistent with Hypotheses 1 and 2. The Federal Reserve Chair market showed a similarly clean result: <em>F</em>(1, 65) = 8.56, <em>p</em> = .005, with the reverse direction non-significant at all lags (<em>p</em> = .233), providing unambiguous unidirectional evidence. For both markets the same-day (lag 0) cross-correlation is essentially zero while the lag +1 correlation is large and significant (Step 5). A direct regression confirms the timing: a same-day change in Reddit does not predict the same-day change in volume (lag-0 <em>R</em><sup>2</sup> = .00 for both markets), whereas it predicts the <em>next</em>-day change (lag-1 <em>R</em><sup>2</sup> = .23 for Govt Shutdown and .14 for Fed Chair, both <em>p</em> ≤ .002). Reddit therefore <em>precedes</em> trading rather than merely accompanying it. These two markets — a protracted shutdown negotiation and a drawn-out confirmation process — share the feature that their resolution unfolded gradually over many days, allowing public attention to accumulate ahead of trading.</p>
+
+  <h3 class="l3">Contemporaneous Markets: Same-Day Co-Movement</h3>
+
+  <p>For the markets covering events that resolved in a discrete shock, the relationship between Reddit and trading volume is contemporaneous rather than leading: the differenced cross-correlation peaks at lag 0, with no significant correlation at lag +1. The Virginia redistricting market is the clearest case. On the levels series its forward Granger result is significant (<em>F</em>(1, 108) = 8.88, <em>p</em> = .004), but on the differenced series it falls to non-significance (<em>F</em>(1, 107) = 3.73, <em>p</em> = .056) — the persistence artefact documented in Table 5. The genuine relationship is same-day and strong: the differenced cross-correlation peaks at lag 0 (<em>r</em> = .55, 95% CI [.41, .67], <em>p</em> &lt; .001) and is null at lag +1 (<em>r</em> = −.09, <em>p</em> = .37). A same-day regression explains 30% of the day-to-day variance in volume (<em>R</em><sup>2</sup> = .30, <em>t</em> = 6.88), and this is robust, not an outlier: deleting the single most influential day leaves <em>r</em> = .36. The reverse direction is cleanly null at every lag (<em>p</em> ≥ .88). Virginia thus shows a strong, robust, one-directional <em>same-day</em> association — not a lead.</p>
+
+  <p>The Texas Senate primary tells the same story even more starkly. Its differenced forward Granger is non-significant (<em>F</em>(1, 50) = 3.75, <em>p</em> = .059), as is its reverse direction (<em>p</em> = .080), so it is not cleanly directional in either direction. But its same-day association is the strongest of all five markets — the differenced cross-correlation at lag 0 is <em>r</em> = .90 (<em>R</em><sup>2</sup> = .81), with nothing at lag +1 — and, contrary to what a single election-day spike would imply, it is robust: removing the most influential single day leaves <em>r</em> = .81. Texas is therefore a strong same-day co-movement with no lead. Finally, the Hormuz market shows <em>no robust relationship at all</em>: no significant Granger in any direction on either specification (differenced <em>F</em>(1, 55) = 2.34, <em>p</em> = .132; reverse <em>p</em> = .826), and only a marginal same-day correlation (<em>r</em> = .26, <em>p</em> = .050) that does not survive a single-observation jackknife (falling to <em>r</em> = .16). This is the decisive case for the event-tempo account (Hypothesis 3): the market with the highest Reddit engagement of all five (zero-rate = 10%) and fully adequate power (<em>n</em> = 60) produces no lead and no robust co-movement, ruling out any explanation in which the lead is a function of the sheer volume of attention.</p>
+
+  <h2 class="l2">Step 5: Cross-Correlation</h2>
+
+  <p>Cross-correlation profiles for all five markets are displayed in Figure 2. Selected cross-correlations are reported in Table 6.</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table 6</p>
+    <p class="table-title noindent"><em>Selected Cross-Correlations Between Reddit Post Count and Kalshi Trading Volume</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th class="center">Lag</th>
+          <th class="center">Pearson <em>r</em></th>
+          <th class="center"><em>p</em>-value</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="4">Govt Shutdown</td><td class="center">−1</td><td class="center">−.31</td><td class="center">.007</td><td>Volume leads Reddit (significant)</td></tr>
+        <tr><td class="center">0</td><td class="center">−.06</td><td class="center">.586</td><td>Same-day: not significant</td></tr>
+        <tr><td class="center"><strong>+1</strong></td><td class="center"><strong>+.48</strong></td><td class="center"><strong>&lt; .001</strong></td><td><strong>Peak: Reddit LEADS Volume</strong></td></tr>
+        <tr><td class="center">+2</td><td class="center">−.23</td><td class="center">.050</td><td>Rebound (negative)</td></tr>
+        <tr><td rowspan="3">Fed Chair</td><td class="center">0</td><td class="center">−.02</td><td class="center">.892</td><td>Same-day: not significant</td></tr>
+        <tr><td class="center"><strong>+1</strong></td><td class="center"><strong>+.38</strong></td><td class="center"><strong>.002</strong></td><td><strong>Peak: Reddit LEADS Volume</strong></td></tr>
+        <tr><td class="center">+2</td><td class="center">−.25</td><td class="center">.042</td><td>Rebound (negative)</td></tr>
+        <tr><td rowspan="2">Virginia</td><td class="center"><strong>0</strong></td><td class="center"><strong>+.55</strong></td><td class="center"><strong>&lt; .001</strong></td><td><strong>Peak: same-day (CONTEMPORANEOUS)</strong></td></tr>
+        <tr><td class="center">+1</td><td class="center">−.09</td><td class="center">.366</td><td>No lead</td></tr>
+        <tr><td rowspan="2">Texas Senate</td><td class="center"><strong>0</strong></td><td class="center"><strong>+.90</strong></td><td class="center"><strong>&lt; .001</strong></td><td><strong>Peak: same-day (single co-spike)</strong></td></tr>
+        <tr><td class="center">+1</td><td class="center">−.02</td><td class="center">.903</td><td>No lead</td></tr>
+        <tr><td rowspan="2">Hormuz</td><td class="center"><strong>0</strong></td><td class="center"><strong>+.26</strong></td><td class="center"><strong>.050</strong></td><td><strong>Peak: same-day (CONTEMPORANEOUS)</strong></td></tr>
+        <tr><td class="center">+1</td><td class="center">+.05</td><td class="center">.698</td><td>No lead</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> Positive lag <em>k</em> = Reddit at day <em>t</em> correlated with Volume at day <em>t</em> + <em>k</em>. Negative lag = Volume leads Reddit. 95% confidence band: ±1.96/√<em>n</em>. All correlations computed on first-differenced series. The two Leading markets peak at lag +1 (with a near-zero same-day correlation); the three Contemporaneous markets peak at lag 0 (with no significant correlation at lag +1).</p>
+  </div>
+
+  <div class="figure-wrap">
+    <p class="figure-label noindent">Figure 2</p>
+    <p class="figure-title noindent"><em>Cross-Correlation Profiles: Reddit Post Count vs. Kalshi Trading Volume, All Five Markets (Lags −7 to +7 Days)</em></p>
+    <img src="fig2_xcorr_all_markets.png" alt="Five cross-correlation bar charts, one per market, showing Pearson r at each lag from -7 to +7 days" class="figure-img">
+    <p class="figure-note noindent"><em>Note.</em> Each panel shows the cross-correlation between Reddit post count and Kalshi trading volume at lags −7 to +7 days. Positive lag <em>k</em> means Reddit at day <em>t</em> is correlated with Volume at day <em>t</em> + <em>k</em> (Reddit leads). Coloured bars = statistically significant at <em>p</em> &lt; .05; grey bars = n.s. Dashed red lines = 95% confidence band (±1.96/√<em>n</em>). Green shaded region marks lag+1 (the predicted lead for slow-developing events). Title annotations show Granger Reddit → Volume significance (*** p &lt; .001, ** p &lt; .01, * p &lt; .05, ns) and peak cross-correlation magnitude and lag. All correlations computed on first-differenced series. The two Leading markets (Govt Shutdown, Fed Chair) peak in the green lag+1 region; the three Contemporaneous markets (Virginia, Texas Senate, Hormuz) peak at lag 0.</p>
+  </div>
+
+  <p>The cross-correlation profiles sharply separate the two regimes. For the two Leading markets, the same-day correlation is negligible while the relationship peaks at lag +1. In the Govt Shutdown market, the cross-correlation is flat at lag 0 (<em>r</em> = −.06, <em>p</em> = .586) and peaks sharply at lag +1 (<em>r</em> = .48, <em>p</em> &lt; .001). The lag +2 correlation is negative (<em>r</em> = −.23, <em>p</em> = .050), indicating a rebound pattern in which elevated Reddit activity on day <em>t</em> predicts higher trading volume on day <em>t</em> + 1, followed by mean reversion at day <em>t</em> + 2 as the burst of discussion-driven trading subsides. A negative correlation at lag −1 (<em>r</em> = −.31, <em>p</em> = .007) indicates that days with high trading volume are followed by reduced Reddit activity — consistent with the event feeling "priced in" after a major trading day. In the Fed Chair market, the same pattern holds: lag 0 is null (<em>r</em> = −.02), the peak is at lag +1 (<em>r</em> = .38, <em>p</em> = .002), and lag +2 shows the negative rebound (<em>r</em> = −.25, <em>p</em> = .042).</p>
+
+  <p>For the three Contemporaneous markets, the profile is inverted: the peak falls at lag 0 and there is no significant correlation at lag +1. Virginia peaks at lag 0 (<em>r</em> = .55, <em>p</em> &lt; .001) and is null at lag +1 (<em>r</em> = −.09, <em>p</em> = .366); Texas Senate peaks at lag 0 (<em>r</em> = .90, <em>p</em> &lt; .001) — a strong association that is robust rather than a single-day artefact (it survives removal of the most influential day at <em>r</em> = .81), again with nothing at lag +1; and Hormuz peaks only marginally at lag 0 (<em>r</em> = .26, <em>p</em> = .050), a correlation that does not survive a single-observation jackknife (falling to <em>r</em> = .16), with no positive-lag structure. Across all five markets, then, a one-day Reddit lead appears only where the underlying event developed slowly; where the event resolved in a discrete shock, Reddit and volume moved together within the same day.</p>
+
+  <!-- ─── 7. DISCUSSION ───────────────────────────────────────────────────── -->
+  <h1 class="l1">Discussion</h1>
+
+  <h2 class="l2">Event Tempo: When Reddit Leads and When It Coincides</h2>
+
+  <p>The central finding of this study is that the Reddit–volume relationship is not uniform but splits cleanly into two regimes defined by the temporal structure of the underlying event. For the government shutdown and Federal Reserve Chair confirmation markets, Reddit post volume Granger-caused trading volume with a one-day lead — consistent with the attention-based mechanism proposed by Da et al. (2011). When Reddit discussion intensifies on day <em>t</em>, this reflects a surge in public attention; that surge translates into increased awareness of the corresponding prediction market, drawing additional participants who trade on day <em>t</em> + 1. The mechanism requires a temporal gap between the formation of attention and its translation into trades, and the two leading markets supply it: both involved a process — a protracted shutdown negotiation, a drawn-out confirmation fight — that unfolded over many days, so that attention accumulated ahead of trading.</p>
+
+  <p>For the three remaining markets, that gap does not exist, and the relationship is contemporaneous rather than leading. A redistricting referendum, a primary election, and a geopolitical crisis are all resolved by discrete events — a court ruling, an election night, a strike or a reopening — that hit Reddit and the order book within the same day. The cross-correlation evidence is unambiguous: these three markets peak at lag 0 and show no significant correlation at lag +1, whereas the two leading markets show the mirror image (a null same-day correlation and a significant peak at lag +1). The same statistical method, applied uniformly, produces a one-day lead for slowly-developing events and a same-day co-movement for shock-resolution events.</p>
+
+  <p>Critically, this distinction is governed by event <em>tempo</em>, not by the <em>volume</em> of attention. The Hormuz market is the decisive case. It has the lowest Reddit zero-rate of all five markets (10% — Reddit was essentially never silent about the crisis) and, in the present specification, adequate statistical power (<em>n</em> = 60, 19.3 observations per parameter). A pure attention-volume account predicts that this market, of all five, should show the strongest lead. It shows none: both Granger directions are null and the cross-correlation peaks marginally at lag 0. Conversely, the Fed Chair market leads despite a relatively high zero-rate of 50%. The amount of Reddit discussion therefore does not determine whether Reddit leads; the temporal structure of the event does. This is the sense in which Hypothesis 3 is supported in its tempo form and the simpler salience-threshold formulation is rejected.</p>
+
+  <p>This pattern supports a precise reframing of the research question. The initial hypothesis was "Reddit post volume Granger-causes Kalshi trading volume." The evidence supports the bounded claim: "Reddit post volume <em>leads</em> Kalshi trading volume for slowly-developing political events, and <em>coincides</em> with it for events that resolve in a single news shock." This is not a retreat from a null result; it is a positive characterisation of the boundary condition of the effect — and, because it correctly predicts the otherwise-puzzling Hormuz result, arguably the more important scientific contribution. The U.S.-specific focus of the Reddit sources used here is not merely a data convenience: it reflects a genuine alignment between the information environment of U.S. political prediction markets and the communities that discuss those events online, an alignment that would not hold for non-U.S. political markets.</p>
+
+  <p>One might still ask whether engagement <em>volume</em>, rather than tempo, separates the regimes. It does not. Across the five markets there is no monotonic relationship between the Reddit zero-rate and the strength of any lead: the Hormuz market has the lowest zero-rate of all five (10%) yet shows no lead and no robust co-movement, while the Fed Chair market leads at a far higher zero-rate (50%). The operative distinction is the <em>location</em> of the cross-correlation peak — lag +1 for the leading markets, lag 0 for the contemporaneous ones — which tracks event tempo, not attention volume. A formal salience-threshold test (regressing peak cross-correlation on zero-rate) is therefore not pursued: the single decisive counterexample, the highest-engagement market exhibiting no lead, is sufficient to reject the attention-volume account in favour of the tempo account.</p>
+
+  <h2 class="l2">Information Channels and Trader Segmentation</h2>
+
+  <p>The results reveal a deeper point about the structure of political prediction markets: different markets are served by different information ecosystems, and those ecosystems attract different types of traders.</p>
+
+  <p>For national, legislatively prominent events — the length of a government shutdown, the confirmation of a Federal Reserve Chair — the information that matters to traders is largely the same information that circulates on Reddit: media reports, political commentary, Congressional schedules, and public statements. Retail traders who follow national politics on Reddit are genuinely informed participants in these markets, and their Reddit activity plausibly signals the same information wave that will, one day later, translate into market activity.</p>
+
+  <p>This analysis suggests a conceptual parallel to the analyst coverage literature in finance (Brennan et al., 1993; Hong &amp; Kacperczyk, 2010), which finds that stocks with low analyst coverage exhibit different price dynamics than well-covered stocks. National political prediction markets are analogous to large-cap stocks: their information environment is broad and public, and publicly observable signals — including social media activity — carry genuine information content. The contemporaneous markets (Virginia, Texas Senate, Hormuz) are well covered on Reddit but resolve too quickly for that coverage to lead; the difference between them and the leading markets is one of event tempo within a shared, publicly observable information environment.</p>
+
+  <p>A distinct third possibility, not directly represented among the five high-volume markets analysed here but important for bounding the claim, concerns markets that combine <em>high trading volume with little or no Reddit discussion</em>. Many heavily-traded Kalshi contracts — for example, state and local primaries, down-ballot races, or specialised regulatory and procedural events — attract substantial informed trading while generating almost no national social-media discourse. For such markets the relevant information does not travel through Reddit at all: it flows through local press, private polling, partisan communications, and the professional networks of operatives and specialist bettors who dominate those order books. In these cases Reddit would be expected to be neither a leading nor a contemporaneous indicator but simply silent, with volume driven entirely by channels the present data do not observe. This delineates the outer boundary of the framework: Reddit can lead or coincide with prediction-market volume only where it is a genuine venue for the relevant information, and the existence of high-volume, low-Reddit markets implies that social-media-based monitoring will systematically miss an entire class of actively-traded political events. Characterising that class — and identifying the alternative information sources that serve it — is left to future work.</p>
+
+  <h2 class="l2">Comparison with Prior Literature</h2>
+
+  <p>The one-day lead found in the leading markets is broadly consistent with the literature on social media and financial markets. Bollen et al. (2011) identified a two-to-six-day Twitter sentiment lead over the DJIA; Da et al. (2011) found a one-to-two-week Google search volume lead over stock prices. The shorter lag in the present study — one day — may reflect the more direct link between prediction market participation and online political engagement, relative to the indirect route from Twitter sentiment to aggregate equity market returns. Prediction market participants are a self-selected group of politically attentive individuals who are also likely to be active Reddit readers; the lag between Reddit activity and market activity should therefore be shorter than between Twitter sentiment and equity markets.</p>
+
+  <p>The cross-correlation magnitude in the leading markets (<em>r</em> = .38–.48 at lag +1) is comparable to, and in some cases exceeds, the effect sizes reported in the social media and finance literature. Sprenger et al. (2014) reported correlations of approximately .30–.40 between Twitter message volume and next-day stock trading volume for high-coverage stocks. The stronger effect for the government shutdown market (<em>r</em> = .48) may reflect the particularly close coupling between public political discourse and prediction market activity for a prominent, nationally followed legislative event that unfolded gradually over several weeks.</p>
+
+  <p>The finding that the reverse direction (Volume → Reddit) was not sustained for the leading markets aligns with the theoretical expectation. Unlike equity markets, where price movements are heavily covered by financial media and would naturally generate online commentary, prediction market volume for political events is not itself a widely reported indicator. Spikes in Kalshi trading volume on, say, the government shutdown market do not routinely generate Reddit posts; but spikes in Reddit discussion about the shutdown are plausibly followed by increased trading as more people become aware of the market. The asymmetry between the two directions is itself informative about the mechanism.</p>
+
+  <h2 class="l2">Limitations</h2>
+
+  <p><strong>Granger causality is not structural causality.</strong> The Granger test establishes that Reddit post counts contain predictive information about future trading volume, but it does not identify the mechanism. Three interpretations are consistent with the result: (1) Reddit discussion directly attracts new participants to the market; (2) both Reddit and trading volume respond to the same news events, with Reddit responding marginally faster; or (3) Reddit activity influences media coverage, which in turn influences market participants. Distinguishing between these mechanisms would require higher-frequency (e.g., hourly) data and a more detailed analysis of the information events that drive both series. The present study cannot rule out that the one-day lead reflects Reddit's faster reaction to common news events rather than a direct causal pathway.</p>
+
+  <p><strong>Daily granularity.</strong> The analysis aggregates activity at the daily level. If Reddit discussion and trading both respond to the same news event within the same day, the predictive relationship appears as a lag-0 correlation rather than a lead-lag structure — which is precisely the pattern observed for the three contemporaneous markets. Daily aggregation cannot, however, distinguish a genuinely simultaneous response from a same-day lead of a few hours; the lag-0 classification therefore means "no lead detectable at daily resolution," not necessarily "perfectly simultaneous." Conversely, for the leading markets the one-day lead is the shortest resolvable, and higher-frequency (e.g., hourly) data would be needed to determine whether the true lead is shorter than 24 hours. Higher-frequency data would thus sharpen both regimes: confirming sub-day co-movement for the contemporaneous markets and pinning down the precise lead for the leading ones.</p>
+
+  <p><strong>Market selection and sample representativeness.</strong> The five markets were selected by applying a minimum volume threshold of one million contracts. This threshold, while necessary to ensure sufficient data for time-series analysis, may introduce a form of selection bias: markets above the threshold are, by construction, the most heavily traded — and potentially the most salient — on Kalshi. This means the positive findings for the Govt Shutdown and Fed Chair markets may generalise only to the top tier of Kalshi markets by volume, not to the full population of U.S. political prediction markets, which includes hundreds of lower-volume contracts. Future work could extend this framework to lower-volume markets using a pooled panel VAR with market-level fixed effects, which would partially address the power problem while enabling broader coverage.</p>
+
+  <p><strong>Reddit coverage.</strong> The analysis uses three subreddits (r/politics, r/TheBulwark, r/PoliticalDiscussion), all focused on U.S. political discourse. Broader social media coverage — Twitter/X political accounts, Facebook political groups, Substack comment sections, news article comment threads — would provide a more complete picture of the information environment and might strengthen the signal for markets where these communities are silent (the high-volume, low-Reddit class discussed above). The three-subreddit sample is sufficient to establish the leading-versus-contemporaneous distinction but may underestimate the effect size, and it is unlikely to alter the regime classification, since that classification turns on the <em>timing</em> of co-movement rather than its magnitude. Additionally, the scope restriction to U.S.-political-focused sources means the framework cannot be directly applied to non-U.S. prediction markets without identifying appropriate local social media analogues.</p>
+
+  <p><strong>Keyword sensitivity.</strong> The keyword sets used to identify event-relevant Reddit posts were constructed manually, reflecting the analyst's judgment about which terms would reliably identify relevant posts while minimising irrelevant ones. The results may be sensitive to this choice. A broader keyword set (including more politician names, nicknames, and adjacent terms) would lower zero-rates and increase post counts but would also increase false positives — posts mentioning a keyword in a different context. A narrower set would produce a cleaner but sparser signal. A formal sensitivity analysis varying the keyword boundary for at least one market would quantify the degree to which the key results depend on keyword selection. The current approach deliberately favours precision over recall, which may slightly understate the true Reddit engagement level for some markets.</p>
+
+  <p><strong>Misclassification noise.</strong> Title-based keyword matching may classify as relevant some posts that mention a politician's name or an event descriptor in an unrelated context — for example, a post about a federal budget dispute that mentions the Federal Reserve Chair incidentally, or a satirical post using a government shutdown metaphor. Misclassification of this type adds noise to the Reddit series (random counts unrelated to the event) rather than directional bias, which would attenuate the Granger signal rather than create a false positive. Nevertheless, noisier Reddit counts reduce signal-to-noise ratios and may partially explain why the Fed Chair Granger result does not persist across multiple lags. Higher-precision classification — using NLP classifiers, topic models, or full-text matching — is a natural extension for future work.</p>
+
+  <p><strong>Title-only sampling.</strong> Reddit post body text was excluded; only titles were used for keyword matching. Titles are the primary unit of information in Reddit's interface, are more consistently populated, and are directly visible without clicking through to the post. However, body text often contains additional context that could improve classification accuracy. For r/politics in particular, many posts are links to news articles with brief title summaries, meaning the title already captures the substantive content. The title-only approach is therefore expected to provide a reasonable approximation of post content, but a body-text-inclusive sensitivity analysis for at least one market would pre-empt concerns about systematic undercounting of relevant engagement.</p>
+
+  <p><strong>Settlement day removal.</strong> Removing the final trading day from each market reduces sample size by one observation and may exclude genuinely informative data. However, the alternative — including anomalously high settlement-driven volume — would distort the analysis more severely, as settlement day volume can exceed the entire prior trading history in some markets. The removal is therefore a conservative and appropriate choice, but it introduces a minor inconsistency across markets with very different settlement dynamics.</p>
+
+  <p><strong>Multiple comparisons.</strong> With 15 lags tested per market and five markets, the analysis involves a large number of simultaneous hypothesis tests. No formal correction for multiple comparisons (e.g., Bonferroni, Benjamini-Hochberg) was applied, in line with the established practice in the time-series Granger causality literature. The risk of over-reading an isolated significant lag is mitigated here by basing interpretation on the <em>location</em> of the cross-correlation peak (lag 0 versus lag +1), corroborated by the Granger test, rather than on any single distant lag; the leading-versus-contemporaneous classification does not depend on isolated, uncorroborated correlations.</p>
+
+  <p><strong>Small samples.</strong> Sample sizes range from 55 (Texas Senate) to 112 (Virginia). In the present specification the Hormuz market is analysed as the <em>n</em> = 60 composite of finalized threshold sub-markets, which is adequately powered (19.3 observations per parameter at lag 1); its null Granger result and same-day cross-correlation peak are therefore informative rather than a power artefact — an important point, since the Hormuz case is what distinguishes the event-tempo account from a simple attention-volume account. The Texas Senate market (<em>n</em> = 55) is the smallest; its marginal forward Granger result (<em>p</em> = .072) alongside a strong same-day correlation may partly reflect limited power, although the lag-0 location of its peak is consistent with the contemporaneous classification regardless of sample size. Future work extending the sample period or including additional markets would sharpen the marginal cases.</p>
+
+  <h2 class="l2">Conclusion</h2>
+
+  <p>This study provides empirical evidence that the relationship between Reddit post volume and Kalshi trading volume in U.S. political prediction markets depends on the temporal structure of the underlying event. The study focuses exclusively on U.S. political prediction markets — the most heavily traded Kalshi category and the type most actively discussed in U.S.-focused Reddit communities (r/politics, r/TheBulwark, r/PoliticalDiscussion). For two slowly-developing markets — the government shutdown length market and the Federal Reserve Chair confirmation market — Reddit post volume Granger-causes trading volume with a consistent one-day lead: the effect is statistically significant, directional, and concentrated at lag +1, with a near-zero same-day correlation. Reddit activity predicts trading volume, but trading volume does not sustain a reverse prediction of Reddit activity. Cross-correlation analysis confirms a peak at lag +1 in both markets (<em>r</em> = .48 and <em>r</em> = .38, respectively; Figure 2), consistent with the attention-based mechanism in which increased public discourse attracts new market participants who trade the following day.</p>
+
+  <p>For three markets resolved by discrete events — the Virginia redistricting referendum, the Texas Senate primary, and the Strait of Hormuz crisis — the relationship is instead contemporaneous: the differenced cross-correlation peaks at lag 0, with no significant correlation at lag +1, indicating that Reddit and trading respond to the same news within the same day rather than one leading the other. The Hormuz market is decisive: despite the highest Reddit engagement of all five markets and adequate statistical power (<em>n</em> = 60), it shows no lead. This rules out the hypothesis that the lead is a function of attention volume and supports the alternative that it is a function of event tempo — a lead can exist only when an event develops slowly enough for public attention to accumulate ahead of trading.</p>
+
+  <p>Taken together, the findings suggest that Reddit political discourse is a genuine <em>leading</em> information signal for slowly-developing political prediction markets, with a one-day transmission lag, and a <em>contemporaneous</em> signal for events that resolve in a single news shock. The bounded claim — Reddit leads some events and merely accompanies others, distinguished by tempo — is more defensible and more informative than a blanket assertion that online discourse predicts market activity. This has implications for understanding how public attention aggregates into market activity, for the design of social media monitoring systems for prediction market operators (which can expect a usable lead only for slow-burn events), and for the broader question of how retail-level online discourse interacts with financial information aggregation mechanisms. Future work should extend this analysis to higher-frequency data capable of resolving sub-day dynamics, to a broader range of social media platforms, to the high-volume low-Reddit markets that lie outside the current sample, and to structural models capable of distinguishing direct retail-attraction effects from common-news-event mechanisms.
+  </p>
+
+  <!-- ─── APPENDIX ────────────────────────────────────────────────────────── -->
+  <h1 class="l1">Appendix A</h1>
+
+  <h2 class="l2">Per-Market Granger Causality F-Tests at All Tested Lags</h2>
+
+  <p>Tables A1–A5 report the full Granger causality F-statistics for each market at every tested lag. Bold rows indicate the BIC-selected lag reported in the main text (Table 4).</p>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table A1</p>
+    <p class="table-title noindent"><em>Granger Causality F-Tests at All Tested Lags — Government Shutdown</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Direction</th>
+          <th class="center">Lag</th>
+          <th class="center"><em>F</em>-statistic</th>
+          <th class="center"><em>df</em></th>
+          <th class="center"><em>p</em>-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3">Reddit → Volume</td><td class="center"><strong>1</strong></td><td class="center"><strong>21.20</strong></td><td class="center"><strong>(1, 73)</strong></td><td class="center"><strong>&lt; .001</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">7.45</td><td class="center">(2, 70)</td><td class="center">.001</td></tr>
+        <tr><td class="center">3</td><td class="center">6.04</td><td class="center">(3, 67)</td><td class="center">.001</td></tr>
+        <tr><td rowspan="3">Volume → Reddit</td><td class="center"><strong>1</strong></td><td class="center"><strong>5.76</strong></td><td class="center"><strong>(1, 73)</strong></td><td class="center"><strong>.019</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">1.41</td><td class="center">(2, 70)</td><td class="center">.251</td></tr>
+        <tr><td class="center">3</td><td class="center">1.84</td><td class="center">(3, 67)</td><td class="center">.149</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> First-differenced series. <em>n</em> = 78. BIC-selected lag = 1 for both directions. Reddit → Volume is significant and sustained across all three lags; Volume → Reddit is significant only at lag 1.</p>
+  </div>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table A2</p>
+    <p class="table-title noindent"><em>Granger Causality F-Tests at All Tested Lags — Federal Reserve Chair Confirmation</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Direction</th>
+          <th class="center">Lag</th>
+          <th class="center"><em>F</em>-statistic</th>
+          <th class="center"><em>df</em></th>
+          <th class="center"><em>p</em>-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3">Reddit → Volume</td><td class="center"><strong>1</strong></td><td class="center"><strong>8.56</strong></td><td class="center"><strong>(1, 65)</strong></td><td class="center"><strong>.005</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">3.68</td><td class="center">(2, 62)</td><td class="center">.031</td></tr>
+        <tr><td class="center">3</td><td class="center">2.59</td><td class="center">(3, 59)</td><td class="center">.062</td></tr>
+        <tr><td rowspan="3">Volume → Reddit</td><td class="center"><strong>1</strong></td><td class="center"><strong>1.45</strong></td><td class="center"><strong>(1, 65)</strong></td><td class="center"><strong>.233</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">0.37</td><td class="center">(2, 62)</td><td class="center">.692</td></tr>
+        <tr><td class="center">3</td><td class="center">1.47</td><td class="center">(3, 59)</td><td class="center">.231</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> First-differenced series. <em>n</em> = 70. BIC-selected lag = 1 for both directions. Reddit → Volume significant at lag 1; Volume → Reddit non-significant at all lags.</p>
+  </div>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table A3</p>
+    <p class="table-title noindent"><em>Granger Causality F-Tests at All Tested Lags — Texas Senate Primary</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Direction</th>
+          <th class="center">Lag</th>
+          <th class="center"><em>F</em>-statistic</th>
+          <th class="center"><em>df</em></th>
+          <th class="center"><em>p</em>-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3">Reddit → Volume</td><td class="center"><strong>1</strong></td><td class="center"><strong>3.75</strong></td><td class="center"><strong>(1, 50)</strong></td><td class="center"><strong>.059</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">1.26</td><td class="center">(2, 47)</td><td class="center">.293</td></tr>
+        <tr><td class="center">3</td><td class="center">0.62</td><td class="center">(3, 44)</td><td class="center">.607</td></tr>
+        <tr><td rowspan="3">Volume → Reddit</td><td class="center"><strong>1</strong></td><td class="center"><strong>3.18</strong></td><td class="center"><strong>(1, 50)</strong></td><td class="center"><strong>.080</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">1.74</td><td class="center">(2, 47)</td><td class="center">.187</td></tr>
+        <tr><td class="center">3</td><td class="center">0.74</td><td class="center">(3, 44)</td><td class="center">.533</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> First-differenced series. <em>n</em> = 55. BIC-selected lag = 1 for both directions. Neither direction reaches significance at any lag; the relationship is contemporaneous (peak cross-correlation at lag 0, <em>r</em> = .90).</p>
+  </div>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table A4</p>
+    <p class="table-title noindent"><em>Granger Causality F-Tests at All Tested Lags — Hormuz Return-to-Normal Composite</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Direction</th>
+          <th class="center">Lag</th>
+          <th class="center"><em>F</em>-statistic</th>
+          <th class="center"><em>df</em></th>
+          <th class="center"><em>p</em>-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3">Reddit → Volume</td><td class="center"><strong>1</strong></td><td class="center"><strong>2.34</strong></td><td class="center"><strong>(1, 55)</strong></td><td class="center"><strong>.132</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">3.11</td><td class="center">(2, 52)</td><td class="center">.053</td></tr>
+        <tr><td class="center">3</td><td class="center">1.92</td><td class="center">(3, 49)</td><td class="center">.138</td></tr>
+        <tr><td rowspan="3">Volume → Reddit</td><td class="center"><strong>1</strong></td><td class="center"><strong>0.05</strong></td><td class="center"><strong>(1, 55)</strong></td><td class="center"><strong>.826</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">1.62</td><td class="center">(2, 52)</td><td class="center">.208</td></tr>
+        <tr><td class="center">3</td><td class="center">1.42</td><td class="center">(3, 49)</td><td class="center">.249</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> First-differenced series. <em>n</em> = 60 (composite of finalized threshold sub-markets). BIC-selected lag = 1 for both directions. No direction is significant at any lag, and the only same-day association (lag 0, <em>r</em> = .26, <em>p</em> = .050) does not survive a single-observation jackknife (falling to <em>r</em> = .16); the market therefore shows no robust relationship (Table 4).</p>
+  </div>
+
+  <div class="table-wrap">
+    <p class="table-label noindent">Table A5</p>
+    <p class="table-title noindent"><em>Granger Causality F-Tests at All Tested Lags — Virginia Redistricting</em></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Direction</th>
+          <th class="center">Lag</th>
+          <th class="center"><em>F</em>-statistic</th>
+          <th class="center"><em>df</em></th>
+          <th class="center"><em>p</em>-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3">Reddit → Volume</td><td class="center"><strong>1</strong></td><td class="center"><strong>3.73</strong></td><td class="center"><strong>(1, 107)</strong></td><td class="center"><strong>.056</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">3.59</td><td class="center">(2, 104)</td><td class="center">.031</td></tr>
+        <tr><td class="center">3</td><td class="center">2.62</td><td class="center">(3, 101)</td><td class="center">.055</td></tr>
+        <tr><td rowspan="3">Volume → Reddit</td><td class="center"><strong>1</strong></td><td class="center"><strong>0.02</strong></td><td class="center"><strong>(1, 107)</strong></td><td class="center"><strong>.884</strong></td></tr>
+        <tr><td class="center">2</td><td class="center">0.48</td><td class="center">(2, 104)</td><td class="center">.617</td></tr>
+        <tr><td class="center">3</td><td class="center">0.29</td><td class="center">(3, 101)</td><td class="center">.835</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note noindent"><em>Note.</em> First-differenced series. <em>n</em> = 112. BIC-selected lag = 1 for both directions. Reddit → Volume is non-significant at lag 1 (<em>p</em> = .056) on the differenced series; the corresponding levels-series result is significant (<em>p</em> = .004), a divergence attributable to Reddit persistence (Table 5). Volume → Reddit is null at every lag. The lag-2 forward result (<em>p</em> = .031) is not accompanied by any positive cross-correlation at lag +1 or +2 (both n.s.; Table 6), so it does not reflect a one-to-two-day lead; the relationship is contemporaneous (peak cross-correlation at lag 0, <em>r</em> = .55).</p>
+  </div>
+
+  <!-- ─── REFERENCES ──────────────────────────────────────────────────────── -->
+  <h1 class="l1">References</h1>
+
+  <p class="ref-item">Antweiler, W., &amp; Frank, M. Z. (2004). Is all that talk just noise? The information content of internet stock message boards. <em>Journal of Finance</em>, <em>59</em>(3), 1259–1294. https://doi.org/10.1111/j.1540-6261.2004.00662.x</p>
+
+  <p class="ref-item">Arrow, K. J., Forsythe, R., Gorham, M., Hahn, R., Hanson, R., Ledyard, J. O., Levmore, S., Litan, R., Milgrom, P., Nelson, F. D., Neumann, G. R., Ottaviani, M., Schelling, T. C., Shiller, R. J., Smith, V. L., Snowberg, E., Sunstein, C. R., Tetlock, P. C., Tetlock, P. E., … Zitzewitz, E. (2008). The promise of prediction markets. <em>Science</em>, <em>320</em>(5878), 877–878. https://doi.org/10.1126/science.1157679</p>
+
+  <p class="ref-item">Berg, J. E., Nelson, F. D., &amp; Rietz, T. A. (2008). Prediction market accuracy in the long run. <em>International Journal of Forecasting</em>, <em>24</em>(2), 285–300. https://doi.org/10.1016/j.ijforecast.2008.03.007</p>
+
+  <p class="ref-item">Bollen, J., Mao, H., &amp; Zeng, X. (2011). Twitter mood predicts the stock market. <em>Journal of Computational Science</em>, <em>2</em>(1), 1–8. https://doi.org/10.1016/j.jocs.2010.12.007</p>
+
+  <p class="ref-item">Brennan, M. J., Jegadeesh, N., &amp; Swaminathan, B. (1993). Investment analysis and the adjustment of stock prices to common information. <em>Review of Financial Studies</em>, <em>6</em>(4), 799–824. https://doi.org/10.1093/rfs/6.4.799</p>
+
+  <p class="ref-item">Chen, H., De, P., Hu, Y. J., &amp; Hwang, B. H. (2014). Wisdom of crowds: The value of stock opinions transmitted through social media. <em>Review of Financial Studies</em>, <em>27</em>(5), 1367–1403. https://doi.org/10.1093/rfs/hhu001</p>
+
+  <p class="ref-item">Cookson, J. A., &amp; Niessner, M. (2020). Why don't we agree? Evidence from a social network of investors. <em>Journal of Finance</em>, <em>75</em>(1), 173–228. https://doi.org/10.1111/jofi.12852</p>
+
+  <p class="ref-item">Da, Z., Engelberg, J., &amp; Gao, P. (2011). In search of attention. <em>Journal of Finance</em>, <em>66</em>(5), 1461–1499. https://doi.org/10.1111/j.1540-6261.2011.01679.x</p>
+
+  <p class="ref-item">Dickey, D. A., &amp; Fuller, W. A. (1979). Distribution of the estimators for autoregressive time series with a unit root. <em>Journal of the American Statistical Association</em>, <em>74</em>(366), 427–431. https://doi.org/10.2307/2286348</p>
+
+  <p class="ref-item">Engle, R. F., &amp; Granger, C. W. J. (1987). Co-integration and error correction: Representation, estimation, and testing. <em>Econometrica</em>, <em>55</em>(2), 251–276. https://doi.org/10.2307/1913236</p>
+
+  <p class="ref-item">Granger, C. W. J. (1969). Investigating causal relations by econometric models and cross-spectral methods. <em>Econometrica</em>, <em>37</em>(3), 424–438. https://doi.org/10.2307/1912791</p>
+
+  <p class="ref-item">Greene, W. H. (2012). <em>Econometric analysis</em> (7th ed.). Pearson.</p>
+
+  <p class="ref-item">Hasso, T., Müller, D., Pelster, M., &amp; Warkulat, S. (2022). Who participated in the GameStop frenzy? Evidence from brokerage accounts. <em>Finance Research Letters</em>, <em>45</em>, Article 102140. https://doi.org/10.1016/j.frl.2021.102140</p>
+
+  <p class="ref-item">Hayek, F. A. (1945). The use of knowledge in society. <em>American Economic Review</em>, <em>35</em>(4), 519–530.</p>
+
+  <p class="ref-item">Hong, H., &amp; Kacperczyk, M. (2010). Competition and bias. <em>Quarterly Journal of Economics</em>, <em>125</em>(4), 1683–1725. https://doi.org/10.1162/qjec.2010.125.4.1683</p>
+
+  <p class="ref-item">Lucas, R. E., Jr. (1972). Expectations and the neutrality of money. <em>Journal of Economic Theory</em>, <em>4</em>(2), 103–124. https://doi.org/10.1016/0022-0531(72)90142-1</p>
+
+  <p class="ref-item">Lyócsa, Š., Baumöhl, E., &amp; Výrost, T. (2022). YOLO trading: Riding with the herd during the GameStop episode. <em>Finance Research Letters</em>, <em>46</em>, Article 102359. https://doi.org/10.1016/j.frl.2021.102359</p>
+
+  <p class="ref-item">Mao, H., Counts, S., &amp; Bollen, J. (2011). Predicting financial markets: Comparing survey, news, Twitter and search engine data. <em>arXiv preprint</em>. https://arxiv.org/abs/1112.1051</p>
+
+  <p class="ref-item">Rothschild, D. (2009). Forecasting elections: Comparing prediction markets, polls, and their biases. <em>Public Opinion Quarterly</em>, <em>73</em>(5), 895–916. https://doi.org/10.1093/poq/nfp082</p>
+
+  <p class="ref-item">Schwarz, G. (1978). Estimating the dimension of a model. <em>Annals of Statistics</em>, <em>6</em>(2), 461–464. https://doi.org/10.1214/aos/1176344136</p>
+
+  <p class="ref-item">Sims, C. A. (1980). Macroeconomics and reality. <em>Econometrica</em>, <em>48</em>(1), 1–48. https://doi.org/10.2307/1912017</p>
+
+  <p class="ref-item">Snowberg, E., Wolfers, J., &amp; Zitzewitz, E. (2012). Prediction markets for economic forecasting. In N. Hashimzade &amp; M. A. Thornton (Eds.), <em>Handbook of research methods and applications in empirical macroeconomics</em> (pp. 398–414). Edward Elgar. https://doi.org/10.3386/w16 773</p>
+
+  <p class="ref-item">Sprenger, T. O., Tumasjan, A., Sandner, P. G., &amp; Welpe, I. M. (2014). Tweets and trades: The information content of stock microblogs. <em>European Financial Management</em>, <em>20</em>(5), 926–957. https://doi.org/10.1111/j.1468-036X.2013.12007.x</p>
+
+  <p class="ref-item">Tetlock, P. C. (2007). Giving content to investor sentiment: The role of media in the stock market. <em>Journal of Finance</em>, <em>62</em>(3), 1139–1168. https://doi.org/10.1111/j.1540-6261.2007.01232.x</p>
+
+  <p class="ref-item">Tetlock, P. C., Saar-Tsechansky, M., &amp; Macskassy, S. (2008). More than words: Quantifying language to measure firms' fundamentals. <em>Journal of Finance</em>, <em>63</em>(3), 1437–1467. https://doi.org/10.1111/j.1540-6261.2008.01362.x</p>
+
+  <p class="ref-item">Toda, H. Y., &amp; Yamamoto, T. (1995). Statistical inference in vector autoregressions with possibly integrated processes. <em>Journal of Econometrics</em>, <em>66</em>(1–2), 225–250. https://doi.org/10.1016/0304-4076(94)01616-8</p>
+
+  <p class="ref-item">Wolfers, J., &amp; Zitzewitz, E. (2004). Prediction markets. <em>Journal of Economic Perspectives</em>, <em>18</em>(2), 107–126. https://doi.org/10.1257/0895330041371321</p>
+
+  <p class="ref-item">Wolfers, J., &amp; Zitzewitz, E. (2006). Interpreting prediction market prices as probabilities. <em>NBER Working Paper</em> No. 12200. https://doi.org/10.3386/w12200</p>
+
+</div>
+</body>
+</html>
